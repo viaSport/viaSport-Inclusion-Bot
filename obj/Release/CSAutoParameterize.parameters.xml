@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="ViaSportBC_SQLdbConnectionString-Web.config Connection String" description="ViaSportBC_SQLdbConnectionString Connection String used in web.config by the application to access the database." defaultValue="Data Source=viasportbc.database.windows.net;Initial Catalog=ViaSportBC_SQLdb;Persist Security Info=True;User ID=viasportbc_sa;Password=3g1TzE90Nh;MultipleActiveResultSets=True;Application Name=EntityFramework" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="C:\\Users\\MarkS\\Source\\Repos\\viaSport\ Disability\ Bot\\Bot\ Application1\\Bot\ Application1\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='ViaSportBC_SQLdbConnectionString']/@connectionString" />
+  </parameter>
+</parameters>

@@ -1,0 +1,153 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="ViaSportBC_SQLdb" Class="BotDataClassesDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="WebSettings" ConnectionString="Data Source=viasportbc.database.windows.net;Initial Catalog=ViaSportBC_SQLdb;Persist Security Info=True;User ID=viasportbc_sa;MultipleActiveResultSets=True;Application Name=EntityFramework" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="ViaSportBC_SQLdbConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.Activity" Member="Activities">
+    <Type Name="Activity">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="Activity_ReferenceActivity" Member="ReferenceActivities" ThisKey="Id" OtherKey="ActivityId" Type="ReferenceActivity" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Subject" Member="Subjects">
+    <Type Name="Subject">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="Subject_ReferenceSubject" Member="ReferenceSubjects" ThisKey="Id" OtherKey="SubjectId" Type="ReferenceSubject" />
+      <Association Name="Subject_SubjectSynonym" Member="SubjectSynonyms" ThisKey="Id" OtherKey="SubjectId" Type="SubjectSynonym" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Disability" Member="Disabilities">
+    <Type Name="Disability">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="Disability_ReferenceDisability" Member="ReferenceDisabilities" ThisKey="Id" OtherKey="DisabilityId" Type="ReferenceDisability" />
+      <Association Name="Disability_DisabilitySynonym" Member="DisabilitySynonyms" ThisKey="Id" OtherKey="DisabilityId" Type="DisabilitySynonym" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ReferenceActivity" Member="ReferenceActivities">
+    <Type Name="ReferenceActivity">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ReferenceId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ActivityId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Activity_ReferenceActivity" Member="Activity" ThisKey="ActivityId" OtherKey="Id" Type="Activity" IsForeignKey="true" />
+      <Association Name="Reference_ReferenceActivity" Member="Reference" ThisKey="ReferenceId" OtherKey="Id" Type="Reference" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ReferenceDisability" Member="ReferenceDisabilities">
+    <Type Name="ReferenceDisability">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ReferenceId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="DisabilityId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Disability_ReferenceDisability" Member="Disability" ThisKey="DisabilityId" OtherKey="Id" Type="Disability" IsForeignKey="true" />
+      <Association Name="Reference_ReferenceDisability" Member="Reference" ThisKey="ReferenceId" OtherKey="Id" Type="Reference" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ReferenceSubject" Member="ReferenceSubjects">
+    <Type Name="ReferenceSubject">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ReferenceId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="SubjectId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Subject_ReferenceSubject" Member="Subject" ThisKey="SubjectId" OtherKey="Id" Type="Subject" IsForeignKey="true" />
+      <Association Name="Reference_ReferenceSubject" Member="Reference" ThisKey="ReferenceId" OtherKey="Id" Type="Reference" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.AnswerStrings" Member="AnswerStrings">
+    <Type Name="AnswerString">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="AnswerType" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="AnswerText" Type="System.String" DbType="Text NOT NULL" CanBeNull="false" UpdateCheck="Never" />
+      <Column Name="Locale" Type="System.String" DbType="NChar(10)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Session" Member="Sessions">
+    <Type Name="Session">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ChannelId" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="ConversationId" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="UtcDateTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Locale" Type="System.String" DbType="NVarChar(10)" CanBeNull="true" />
+      <Association Name="Session_Query" Member="Queries" ThisKey="ID" OtherKey="SessionId" Type="Query" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ReferenceProvided" Member="ReferenceProvideds">
+    <Type Name="ReferenceProvided">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ReferenceId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="QueryId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Query_ReferenceProvided" Member="Query" ThisKey="QueryId" OtherKey="ID" Type="Query" IsForeignKey="true" />
+      <Association Name="Reference_ReferenceProvided" Member="Reference" ThisKey="ReferenceId" OtherKey="Id" Type="Reference" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Query" Member="Queries">
+    <Type Name="Query">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="SessionId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="UtcDateTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="Query_ReferenceProvided" Member="ReferenceProvideds" ThisKey="ID" OtherKey="QueryId" Type="ReferenceProvided" />
+      <Association Name="Query_Entity" Member="Entities" ThisKey="ID" OtherKey="QueryId" Type="Entity" />
+      <Association Name="Query_Intent" Member="Intents" ThisKey="ID" OtherKey="QueryId" Type="Intent" />
+      <Association Name="Session_Query" Member="Session" ThisKey="SessionId" OtherKey="ID" Type="Session" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Entity" Member="Entities">
+    <Type Name="Entity">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="QueryId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="EntityValue" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="EntityScore" Type="System.Single" DbType="Real" CanBeNull="true" />
+      <Column Name="EntityType" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Association Name="Query_Entity" Member="Query" ThisKey="QueryId" OtherKey="ID" Type="Query" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Intent" Member="Intents">
+    <Type Name="Intent">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="QueryId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="IntentName" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="IntentScore" Type="System.Single" DbType="Real" CanBeNull="true" />
+      <Association Name="Query_Intent" Member="Query" ThisKey="QueryId" OtherKey="ID" Type="Query" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.LanguageCorrection" Member="LanguageCorrections">
+    <Type Name="LanguageCorrection">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="OutdatedTerm" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="PreferredTerm" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.DisabilitySynonym" Member="DisabilitySynonyms">
+    <Type Name="DisabilitySynonym">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="DisabilityId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Synonym" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="Disability_DisabilitySynonym" Member="Disability" ThisKey="DisabilityId" OtherKey="Id" Type="Disability" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.SubjectSynonym" Member="SubjectSynonyms">
+    <Type Name="SubjectSynonym">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="SubjectId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Synonym" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="Subject_SubjectSynonym" Member="Subject" ThisKey="SubjectId" OtherKey="Id" Type="Subject" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Reference" Member="References">
+    <Type Name="Reference">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Title" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Subtitle" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="CardText" Type="System.String" DbType="NText" CanBeNull="true" />
+      <Column Name="CardImageUri" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="ReferenceUri" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="Intent" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="deleted" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="version" Type="System.Data.Linq.Binary" DbType="rowversion NOT NULL" CanBeNull="false" IsVersion="true" />
+      <Column Name="createdAt" Type="System.DateTimeOffset" DbType="DateTimeOffset NOT NULL" CanBeNull="false" />
+      <Column Name="updatedAt" Type="System.DateTimeOffset" DbType="DateTimeOffset NOT NULL" CanBeNull="false" />
+      <Column Name="Location" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Association Name="Reference_ReferenceActivity" Member="ReferenceActivities" ThisKey="Id" OtherKey="ReferenceId" Type="ReferenceActivity" />
+      <Association Name="Reference_ReferenceDisability" Member="ReferenceDisabilities" ThisKey="Id" OtherKey="ReferenceId" Type="ReferenceDisability" />
+      <Association Name="Reference_ReferenceSubject" Member="ReferenceSubjects" ThisKey="Id" OtherKey="ReferenceId" Type="ReferenceSubject" />
+      <Association Name="Reference_ReferenceProvided" Member="ReferenceProvideds" ThisKey="Id" OtherKey="ReferenceId" Type="ReferenceProvided" />
+    </Type>
+  </Table>
+</Database>

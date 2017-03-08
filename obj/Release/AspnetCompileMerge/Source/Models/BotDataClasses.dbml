@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="ViaSportBC_SQLdb" Class="BotDataClassesDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="WebSettings" ConnectionString="Data Source=viasportbc.database.windows.net;Initial Catalog=ViaSportBC_SQLdb;Persist Security Info=True;User ID=viasportbc_sa;MultipleActiveResultSets=True;Application Name=EntityFramework" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="ViaSportBC_SQLdbConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.Activity" Member="Activities">
+    <Type Name="Activity">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="Activity_ReferenceActivity" Member="ReferenceActivities" ThisKey="Id" OtherKey="ActivityId" Type="ReferenceActivity" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Subject" Member="Subjects">
+    <Type Name="Subject">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="Subject_ReferenceSubject" Member="ReferenceSubjects" ThisKey="Id" OtherKey="SubjectId" Type="ReferenceSubject" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Disability" Member="Disabilities">
+    <Type Name="Disability">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="Disability_ReferenceDisability" Member="ReferenceDisabilities" ThisKey="Id" OtherKey="DisabilityId" Type="ReferenceDisability" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Reference" Member="References">
+    <Type Name="Reference">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Title" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Subtitle" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="CardText" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="CardImageUri" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="ReferenceUri" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="Intent" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Association Name="Reference_ReferenceActivity" Member="ReferenceActivities" ThisKey="Id" OtherKey="ReferenceId" Type="ReferenceActivity" />
+      <Association Name="Reference_ReferenceDisability" Member="ReferenceDisabilities" ThisKey="Id" OtherKey="ReferenceId" Type="ReferenceDisability" />
+      <Association Name="Reference_ReferenceSubject" Member="ReferenceSubjects" ThisKey="Id" OtherKey="ReferenceId" Type="ReferenceSubject" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ReferenceActivity" Member="ReferenceActivities">
+    <Type Name="ReferenceActivity">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ReferenceId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ActivityId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Activity_ReferenceActivity" Member="Activity" ThisKey="ActivityId" OtherKey="Id" Type="Activity" IsForeignKey="true" />
+      <Association Name="Reference_ReferenceActivity" Member="Reference" ThisKey="ReferenceId" OtherKey="Id" Type="Reference" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ReferenceDisability" Member="ReferenceDisabilities">
+    <Type Name="ReferenceDisability">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ReferenceId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="DisabilityId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Disability_ReferenceDisability" Member="Disability" ThisKey="DisabilityId" OtherKey="Id" Type="Disability" IsForeignKey="true" />
+      <Association Name="Reference_ReferenceDisability" Member="Reference" ThisKey="ReferenceId" OtherKey="Id" Type="Reference" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ReferenceSubject" Member="ReferenceSubjects">
+    <Type Name="ReferenceSubject">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ReferenceId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="SubjectId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Reference_ReferenceSubject" Member="Reference" ThisKey="ReferenceId" OtherKey="Id" Type="Reference" IsForeignKey="true" />
+      <Association Name="Subject_ReferenceSubject" Member="Subject" ThisKey="SubjectId" OtherKey="Id" Type="Subject" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.AnswerStrings" Member="AnswerStrings">
+    <Type Name="AnswerString">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="AnswerType" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="AnswerText" Type="System.String" DbType="Text NOT NULL" CanBeNull="false" UpdateCheck="Never" />
+      <Column Name="Locale" Type="System.String" DbType="NChar(10)" CanBeNull="true" />
+    </Type>
+  </Table>
+</Database>
