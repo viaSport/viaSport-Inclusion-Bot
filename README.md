@@ -1,5 +1,4 @@
----
-title: 'Bots for Good – Building a Conversational UI for Inclusive Sport'
+Bots for Good – Building a Conversational UI for Inclusive Sport
 ---
 
 Introduction
@@ -282,7 +281,7 @@ access rich insights into the bot’s performance.
 
 The following diagram illustrates the project architecture:
 
-![](media/image1.png){width="6.5in" height="4.269444444444445in"}
+![](https://github.com/viaSport/viaSport-Inclusion-Bot/blob/master/images/viaSport_architecture_diagram_main.PNG)
 
 Bot Framework SDK
 -----------------
@@ -356,17 +355,17 @@ other code before the end of their method, otherwise the threading will
 fall out of sync. This came to light when working with the Confirm
 prompts asking the user to confirm a spell-corrected phrase:
 
-PromptDialog.Confirm(
-
-context,
-
-AfterSpellCheckAsync,
-
-(\$"Did you mean {suggestions}?"),
-
-"Didn't get that!",
-
-promptStyle: PromptStyle.None);
+    PromptDialog.Confirm(
+    
+    context,
+    
+    AfterSpellCheckAsync,
+    
+    (\$"Did you mean {suggestions}?"),
+    
+    "Didn't get that!",
+    
+    promptStyle: PromptStyle.None);
 
 This piece of code was initially placed in the middle of a method that
 would also parse through the spell-corrected results, but because the
@@ -395,7 +394,7 @@ is called with a query string based on the entities found in the user’s
 spell checked query. Those results are then delivered to the user. The
 sections that follow detail the implementation of the three APIs.
 
-![](media/image2.png){width="6.5in" height="3.579861111111111in"}
+![Cognitive Services implementation in viaSport Inclusion Bot](https://github.com/viaSport/viaSport-Inclusion-Bot/blob/master/images/viaSport_cognitive_services_flow_diagram.PNG)
 
 ### LUIS
 
@@ -410,44 +409,44 @@ intents does and how it is handled in the bot code.
 The None intent handles the case in which no other intent has been
 recognized by LUIS. In this case, the bot
 
-\[LuisIntent("")\]
-
-public async Task None(IDialogContext context, LuisResult result)
-
-{
-
-this.query = result.Query;
-
-await context.LoadAsync(new CancellationToken());
-
-PostTelemetryCustomEvent("none", 0, false);
-
-string message = \$"Sorry I did not understand you: ";
-
-if (result.Query.ToLower() == "version")
-
-{
-
-message = "viaSport Disability Resource Bot, version: "
-
-+
-System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
-
-await context.PostAsync(BotDbStrings.MakeItAcceptable(message));
-
-context.Wait(MessageReceived);
-
-}
-
-else if (result != null && result.Query != null)
-
-{
-
-await ConfirmNoneIntent(context, result);
-
-}
-
-}
+    \[LuisIntent("")\]
+    
+    public async Task None(IDialogContext context, LuisResult result)
+    
+    {
+    
+    this.query = result.Query;
+    
+    await context.LoadAsync(new CancellationToken());
+    
+    PostTelemetryCustomEvent("none", 0, false);
+    
+    string message = \$"Sorry I did not understand you: ";
+    
+    if (result.Query.ToLower() == "version")
+    
+    {
+    
+    message = "viaSport Disability Resource Bot, version: "
+    
+    +
+    System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+    
+    await context.PostAsync(BotDbStrings.MakeItAcceptable(message));
+    
+    context.Wait(MessageReceived);
+    
+    }
+    
+    else if (result != null && result.Query != null)
+    
+    {
+    
+    await ConfirmNoneIntent(context, result);
+    
+    }
+    
+    }
 
 Within the None intent, another routine entitled ConfirmNoneIntent is
 called. The purpose of this routine is to double check that the user’s
@@ -465,68 +464,67 @@ performs a spell check, asks the user if they meant to say, “How do I
 coach hockey?” and, when the user confirms, feeds this new query into
 LUIS, which recognizes it correctly as a HowToCoach intent.
 
-![](media/image3.png){width="4.355462598425197in"
-height="4.510416666666667in"}
+![](https://github.com/viaSport/viaSport-Inclusion-Bot/blob/master/images/bot-snapshot-confirmnoneintent.PNG)
 
 Below is the code for the routine that handles this case.
 
-private async Task ConfirmNoneIntent(IDialogContext context, LuisResult
-result)
-
-{
-
-var checkedPhrase = await SpellCheck(result.Query);
-
-var suggestions = string.Empty;
-
-this.newMessage = this.query;
-
-foreach (var phrase in checkedPhrase)
-
-{
-
-var oldWord = phrase.token.Replace("Wrong Word : ", string.Empty);
-
-this.newMessage = this.newMessage.Replace(oldWord, phrase.suggestion);
-
-}
-
-if (this.newMessage == this.query)
-
-{
-
-BotDbAnalytics.UpdateAnalyticDatabase();
-
-BotDB botDB = new BotDB();
-
-var message = string.Format(botDB.GetString(null, "none"),
-result.Query);
-
-await context.PostAsync(BotDbStrings.MakeItAcceptable(message));
-
-context.Wait(this.MessageReceived);
-
-}
-
-else
-
-{
-
-PromptDialog.Confirm(
-
-context,
-
-this.OnSpellCheckIntent,
-
-\$"Did you mean '{this.newMessage}'?",
-
-"Didn't get that!",
-
-promptStyle: PromptStyle.None);
-
-}
-
-}
+    private async Task ConfirmNoneIntent(IDialogContext context, LuisResult
+    result)
+    
+    {
+    
+    var checkedPhrase = await SpellCheck(result.Query);
+    
+    var suggestions = string.Empty;
+    
+    this.newMessage = this.query;
+    
+    foreach (var phrase in checkedPhrase)
+    
+    {
+    
+    var oldWord = phrase.token.Replace("Wrong Word : ", string.Empty);
+    
+    this.newMessage = this.newMessage.Replace(oldWord, phrase.suggestion);
+    
+    }
+    
+    if (this.newMessage == this.query)
+    
+    {
+    
+    BotDbAnalytics.UpdateAnalyticDatabase();
+    
+    BotDB botDB = new BotDB();
+    
+    var message = string.Format(botDB.GetString(null, "none"),
+    result.Query);
+    
+    await context.PostAsync(BotDbStrings.MakeItAcceptable(message));
+    
+    context.Wait(this.MessageReceived);
+    
+    }
+    
+    else
+    
+    {
+    
+    PromptDialog.Confirm(
+    
+    context,
+    
+    this.OnSpellCheckIntent,
+    
+    \$"Did you mean '{this.newMessage}'?",
+    
+    "Didn't get that!",
+    
+    promptStyle: PromptStyle.None);
+    
+    }
+    
+    }
 
 #### Hello
 
@@ -535,31 +533,30 @@ trained to understand generic and colloquial phrases including, “hello,”
 “hi,” “what’s up,” etc. It responds to the user with a greeting from the
 database, like the one shown in the example below:
 
-![](media/image4.png){width="4.411458880139983in"
-height="4.568405511811024in"}
+![](https://github.com/viaSport/viaSport-Inclusion-Bot/blob/master/images/bot-snapshot-hellointent.PNG)
 
 Below is the code that handles the Hello intent.
 
-\[LuisIntent("viasport.intent.hello")\]
-
-public async Task Hello(IDialogContext context, LuisResult result)
-
-{
-
-PostTelemetryCustomEvent("hello", 0, false);
-
-BotDB botDB = new BotDB();
-
-var message = botDB.GetString(null, "viasport.intent.hello.greeting");
-
-BotDbAnalytics.UpdateAnalyticDatabase(result.Intents\[0\].Intent,
-(double)result.Intents\[0\].Score);
-
-await context.PostAsync(BotDbStrings.MakeItAcceptable(message));
-
-context.Wait(MessageReceived);
-
-}
+    \[LuisIntent("viasport.intent.hello")\]
+    
+    public async Task Hello(IDialogContext context, LuisResult result)
+    
+    {
+    
+    PostTelemetryCustomEvent("hello", 0, false);
+    
+    BotDB botDB = new BotDB();
+    
+    var message = botDB.GetString(null, "viasport.intent.hello.greeting");
+    
+    BotDbAnalytics.UpdateAnalyticDatabase(result.Intents\[0\].Intent,
+    (double)result.Intents\[0\].Score);
+    
+    await context.PostAsync(BotDbStrings.MakeItAcceptable(message));
+    
+    context.Wait(MessageReceived);
+    
+    }
 
 #### 
 
@@ -570,30 +567,29 @@ clarification. The bot responds by offering suggestions on what the user
 can ask for, then returns to the root of the dialog where it awaits the
 next input, which will then be fed through LUIS.
 
-![](media/image5.png){width="4.380610236220472in"
-height="4.536458880139983in"}
+![](https://github.com/viaSport/viaSport-Inclusion-Bot/blob/master/images/bot-snapshot-helpintent.PNG)
 
-\[LuisIntent("viasport.intent.help")\]
-
-public async Task Help(IDialogContext context, LuisResult result)
-
-{
-
-PostTelemetryCustomEvent("hello", 0, false);
-
-BotDB botDB = new BotDB();
-
-var message = string.Format(botDB.GetString(null,
-"viasport.intent.help.greeting"), "\\n", "\\n", "\\n");
-
-BotDbAnalytics.UpdateAnalyticDatabase(result.Intents\[0\].Intent,
-(double)result.Intents\[0\].Score);
-
-await context.PostAsync(BotDbStrings.MakeItAcceptable(message));
-
-context.Wait(MessageReceived);
-
-}
+    \[LuisIntent("viasport.intent.help")\]
+    
+    public async Task Help(IDialogContext context, LuisResult result)
+    
+    {
+    
+    PostTelemetryCustomEvent("hello", 0, false);
+    
+    BotDB botDB = new BotDB();
+    
+    var message = string.Format(botDB.GetString(null,
+    "viasport.intent.help.greeting"), "\\n", "\\n", "\\n");
+    
+    BotDbAnalytics.UpdateAnalyticDatabase(result.Intents\[0\].Intent,
+    (double)result.Intents\[0\].Score);
+    
+    await context.PostAsync(BotDbStrings.MakeItAcceptable(message));
+    
+    context.Wait(MessageReceived);
+    
+    }
 
 #### HowToCoach, FindProgram, and FindResource
 
@@ -608,19 +604,16 @@ specific resource that will help them with a specific disability or
 sport. The following three figures show some sample utterances that
 trigger each intent, captured from the LUIS portal.
 
-![](media/image6.png){width="5.1875in" height="4.535182633420822in"}
+![](https://github.com/viaSport/viaSport-Inclusion-Bot/blob/master/images/LUIS_howtocoach_utterances.PNG)
 
 *Figure: Sample utterances for HowToCoach*
 
-![](media/image7.png){width="5.0731353893263345in"
-height="4.854166666666667in"}
+![](https://github.com/viaSport/viaSport-Inclusion-Bot/blob/master/images/LUIS_findprogram_utterances.PNG)
 
 *Figure: Sample utterances for FindProgram*
 
-![](media/image8.png){width="5.06459864391951in"
-height="5.078125546806649in"}
-
-*Figure: Sample utterances for FindProgram*
+![](https://github.com/viaSport/viaSport-Inclusion-Bot/blob/master/images/LUIS_findresource_utterances.PNG)
+*Figure: Sample utterances for FindResource*
 
 In the bot code, each of these three intents has a handler and
 accompanying routines that are identical in purpose and structure,
@@ -638,73 +631,73 @@ is not a close enough match, so the bot passes it into the None handler
 instead. If it is above the threshold, then the user’s query is passed
 into LoadAllEntitiesAsync.
 
-\[LuisIntent("viasport.intent.howtocoach")\]
+    \[LuisIntent("viasport.intent.howtocoach")\]
+    
+    public async Task HowToCoach(IDialogContext context, LuisResult result)
+    
+    {
+    
+    if (result.Intents\[0\].Score &lt; AcceptableScore)
+    
+    {
+    
+    await this.None(context, result);
+    
+    }
+    
+    else
+    
+    {
+    
+    await LoadAllEntitiesAsync(context, result);
+    
+    query = result.Query;
+    
+    intent = result.Intents\[0\].Intent;
+    
+    intentScore = (double)result.Intents\[0\].Score;
+    
+    PostTelemetryCustomEvent("howtocoach", 0, false);
+    
+    respondToLuis = true;
+    
+    if (respondToLuis)
+    
+    {
+    
+    await CheckResultsAsync(context);
+    
+    }
+    
+    }
+    
+    }
 
-public async Task HowToCoach(IDialogContext context, LuisResult result)
-
-{
-
-if (result.Intents\[0\].Score &lt; AcceptableScore)
-
-{
-
-await this.None(context, result);
-
-}
-
-else
-
-{
-
-await LoadAllEntitiesAsync(context, result);
-
-query = result.Query;
-
-intent = result.Intents\[0\].Intent;
-
-intentScore = (double)result.Intents\[0\].Score;
-
-PostTelemetryCustomEvent("howtocoach", 0, false);
-
-respondToLuis = true;
-
-if (respondToLuis)
-
-{
-
-await CheckResultsAsync(context);
-
-}
-
-}
-
-}
-
-LoadAllEntitiesAsync parses the query and loads any recognized entities
-by calling GetEntityAsync.
-
-private async Task LoadAllEntitiesAsync(IDialogContext context,
-LuisResult result)
-
-{
-
-\_entities = new Dictionary&lt;string, EntityRecommendation&gt;
-
-{
-
-{"SportName", await GetEntityAsync(context, result, "SportName")},
-
-{"DisabilityType", await GetEntityAsync(context, result,
-"DisabilityType")},
-
-{"Subject", await GetEntityAsync(context, result, "Subject")},
-
-{"buildin.geography.city", await GetEntityAsync(context, result,
-"builtin.geography.city")}
-
-};
-
-}
+    LoadAllEntitiesAsync parses the query and loads any recognized entities
+    by calling GetEntityAsync.
+    
+    private async Task LoadAllEntitiesAsync(IDialogContext context,
+    LuisResult result)
+    
+    {
+    
+    \_entities = new Dictionary&lt;string, EntityRecommendation&gt;
+    
+    {
+    
+    {"SportName", await GetEntityAsync(context, result, "SportName")},
+    
+    {"DisabilityType", await GetEntityAsync(context, result,
+    "DisabilityType")},
+    
+    {"Subject", await GetEntityAsync(context, result, "Subject")},
+    
+    {"buildin.geography.city", await GetEntityAsync(context, result,
+    "builtin.geography.city")}
+    
+    };
+    
+    }
 
 LoadAllEntitiesAsync calls GetEntityAsync (signature below), which
 performs a spell check on the entity and returns the spell-corrected
@@ -713,8 +706,8 @@ carried through the dialog, and lowers the human error in the bot
 conversation. Doing this spell check prevents the bot from ever querying
 the database for a misspelled entity, thus lowering the risk for error.
 
-private async Task&lt;EntityRecommendation&gt;
-GetEntityAsync(IDialogContext context, LuisResult result, string name)
+    private async Task&lt;EntityRecommendation&gt;
+    GetEntityAsync(IDialogContext context, LuisResult result, string name)
 
 Once all the entities are loaded, PostTelemetryCustomEvent is called,
 then the query is passed into CheckResultsAsync. CheckResultsAsync takes
@@ -745,8 +738,7 @@ will continue to call SendResultsToPersonAsync until all the results
 have been delivered to the user. The diagram for this flow is
 illustrated in the diagram below:
 
-![](media/image9.png){width="5.005020778652669in"
-height="6.7492924321959755in"}
+![](https://github.com/viaSport/viaSport-Inclusion-Bot/blob/master/images/viaSport_howtocoach_intent_dialog_flow.PNG)
 
 ### Bing Web Search API
 
@@ -763,7 +755,7 @@ The Bing Web Search API is implemented in the code in the OnWebSearch
 Task. This Task builds a query from the entities that have been
 collected from the user, and structures it as follows:
 
-query = \$"{intent} {sport} {subject} {disability}";
+    query = \$"{intent} {sport} {subject} {disability}";
 
 For example, if the user’s query was, “How do I coach volleyball to a
 student with spinal cord bifuda?” the query sent to Bing Web Search will
@@ -773,133 +765,132 @@ wheelchair,” the query sent to Bing Web Search will be, “programs for
 ski daughter wheelchair.” The intents are converted to natural phrases
 using a simple check, as shown below:
 
-> var intent = "coaching";
-
-if (intent.Contains("resource"))
-
-{
-
-intent = "information on";
-
-}
-
-else if (intent.Contains("program"))
-
-{
-
-intent = "programs for";
-
-}
+    var intent = "coaching";
+    
+    if (intent.Contains("resource"))
+    
+    {
+    
+    intent = "information on";
+    
+    }
+    
+    else if (intent.Contains("program"))
+    
+    {
+    
+    intent = "programs for";
+    
+    }
 
 Once the query string is built it is posted to the API, the results are
 deserialized and sent to the user as cards using PostResultsToUserAsync.
 The full OnWebSearch Task is shown below:
 
-private async Task OnWebSearch(IDialogContext context)
+    private async Task OnWebSearch(IDialogContext context)
+    
+    {
+    
+    var client = new HttpClient();
+    
+    var queryString = HttpUtility.ParseQueryString(string.Empty);
+    
+    client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", "&lt;BING
+    WEB SEARCH API KEY HERE&gt;");
+    
+    var intent = "coaching";
+    
+    if (intent.Contains("resource"))
+    
+    {
+    
+    intent = "information on";
+    
+    }
+    
+    else if (intent.Contains("program"))
+    
+    {
+    
+    intent = "programs for";
+    
+    }
+    
+    var sport = \_entities\["SportName"\].Entity ?? "sports";
+    
+    var subject = \_entities\["Subject"\].Entity ?? "people";
+    
+    var disability = \_entities\["DisabilityType"\].Entity ?? "with
+    disabilites";
+    
+    query = \$"{intent} {sport} {subject} {disability}";
+    
+    queryString\["q"\] = query;
+    
+    queryString\["count"\] = \_maxReferences.ToString();
+    
+    queryString\["offset"\] = "0";
+    
+    queryString\["mkt"\] = \_language;
+    
+    queryString\["safesearch"\] = "strict";
+    
+    var uri = "https://api.cognitive.microsoft.com/bing/v5.0/search?" +
+    queryString;
+    
+    var response = await client.GetAsync(uri);
+    
+    if (response.IsSuccessStatusCode)
+    
+    {
+    
+    var jsonString = response.Content.ReadAsStringAsync();
+    
+    var searchResults =
+    JsonConvert.DeserializeObject&lt;SearchResponse&gt;(jsonString.Result);
+    
+    var references = new List&lt;Reference&gt;();
+    
+    foreach (var i in searchResults.WebPages?.Value)
+    
+    {
+    
+    var reference = new Reference()
+    
+    {
+    
+    Title = i.Name,
+    
+    Subtitle = i.DisplayUrl,
+    
+    CardText = i.Snippet,
+    
+    ReferenceUri = i.Url,
+    
+    };
+    
+    references.Add(reference);
+    
+    }
+    
+    await SendResultsToPersonAsync(context, references);
+    
+    }
+    
+    else
+    
+    {
+    
+    await context.PostAsync("Sorry looks like we are having some issues with
+    our websearch!");
+    
+    await OnContactViaSport(context);
+    
+    }
+    
+    }
 
-{
-
-var client = new HttpClient();
-
-var queryString = HttpUtility.ParseQueryString(string.Empty);
-
-client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", "&lt;BING
-WEB SEARCH API KEY HERE&gt;");
-
-var intent = "coaching";
-
-if (intent.Contains("resource"))
-
-{
-
-intent = "information on";
-
-}
-
-else if (intent.Contains("program"))
-
-{
-
-intent = "programs for";
-
-}
-
-var sport = \_entities\["SportName"\].Entity ?? "sports";
-
-var subject = \_entities\["Subject"\].Entity ?? "people";
-
-var disability = \_entities\["DisabilityType"\].Entity ?? "with
-disabilites";
-
-query = \$"{intent} {sport} {subject} {disability}";
-
-queryString\["q"\] = query;
-
-queryString\["count"\] = \_maxReferences.ToString();
-
-queryString\["offset"\] = "0";
-
-queryString\["mkt"\] = \_language;
-
-queryString\["safesearch"\] = "strict";
-
-var uri = "https://api.cognitive.microsoft.com/bing/v5.0/search?" +
-queryString;
-
-var response = await client.GetAsync(uri);
-
-if (response.IsSuccessStatusCode)
-
-{
-
-var jsonString = response.Content.ReadAsStringAsync();
-
-var searchResults =
-JsonConvert.DeserializeObject&lt;SearchResponse&gt;(jsonString.Result);
-
-var references = new List&lt;Reference&gt;();
-
-foreach (var i in searchResults.WebPages?.Value)
-
-{
-
-var reference = new Reference()
-
-{
-
-Title = i.Name,
-
-Subtitle = i.DisplayUrl,
-
-CardText = i.Snippet,
-
-ReferenceUri = i.Url,
-
-};
-
-references.Add(reference);
-
-}
-
-await SendResultsToPersonAsync(context, references);
-
-}
-
-else
-
-{
-
-await context.PostAsync("Sorry looks like we are having some issues with
-our websearch!");
-
-await OnContactViaSport(context);
-
-}
-
-}
-
-![](media/image10.png){width="3.3565573053368327in"
-height="3.8281255468066493in"}
+![](https://github.com/viaSport/viaSport-Inclusion-Bot/blob/master/images/bot-snapshot-websearch.PNG)
 
 After the web search (or if the web search fails), the bot invites the
 user to contact viaSport to provide feedback on the experience. The
@@ -907,8 +898,7 @@ positioning of this interaction was informed by Elisabeth from viaSport,
 who agreed that this would be the most appropriate point in the
 conversation to invite the user to provide feedback.
 
-![](media/image11.png){width="3.3289359142607173in"
-height="3.807292213473316in"}
+![](https://github.com/viaSport/viaSport-Inclusion-Bot/blob/master/images/bot-snapshot-contact.PNG)
 
 ### Spell Check API
 
@@ -920,9 +910,9 @@ API and returning a response which includes the rich data about the
 query, including the index of any misspelled word in the string, the
 misspelled word, and the suggested correction.
 
-private async
-Task&lt;IEnumerable&lt;Models.SpellCheckCall.SpellCheck&gt;&gt;
-SpellCheck(string received)
+    private async
+    Task&lt;IEnumerable&lt;Models.SpellCheckCall.SpellCheck&gt;&gt;
+    SpellCheck(string received)
 
 When dealing with a specific entity, CorrectEntitySpelling is called to
 pull out the appropriate corrected term from the object returned by
@@ -930,63 +920,63 @@ SpellCheck. This parses through the structured return from SpellCheck
 and replaces the misspelled words in the original string with the
 corrected terms.
 
-private string CorrectEntitySpelling(string originalEntityInput,
-IEnumerable&lt;Models.SpellCheckCall.SpellCheck&gt; checkedPhrase)
-
-{
-
-ObservableCollection&lt;Models.SpellCheckCall.SpellCol&gt; SearchResults
-= new ObservableCollection&lt;Models.SpellCheckCall.SpellCol&gt;();
-
-var suggestions = string.Empty;
-
-for (int i = 0; i &lt; checkedPhrase.Count(); i++)
-
-{
-
-Models.SpellCheckCall.SpellCheck suggestedCorrection =
-checkedPhrase.ElementAt(i);
-
-suggestions += suggestedCorrection.suggestion;
-
-SearchResults.Add(new Models.SpellCheckCall.SpellCol
-
-{
-
-spellcol = suggestedCorrection
-
-});
-
-}
-
-if (suggestions == string.Empty)
-
-{
-
-return originalEntityInput;
-
-}
-
-else
-
-{
-
-foreach (var phrase in checkedPhrase)
-
-{
-
-var oldWord = phrase.token.Replace("Wrong Word : ", string.Empty);
-
-originalEntityInput = originalEntityInput.Replace(oldWord,
-phrase.suggestion);
-
-}
-
-return originalEntityInput;
-
-}
-
-}
+    private string CorrectEntitySpelling(string originalEntityInput,
+    IEnumerable&lt;Models.SpellCheckCall.SpellCheck&gt; checkedPhrase)
+    
+    {
+    
+    ObservableCollection&lt;Models.SpellCheckCall.SpellCol&gt; SearchResults
+    = new ObservableCollection&lt;Models.SpellCheckCall.SpellCol&gt;();
+    
+    var suggestions = string.Empty;
+    
+    for (int i = 0; i &lt; checkedPhrase.Count(); i++)
+    
+    {
+    
+    Models.SpellCheckCall.SpellCheck suggestedCorrection =
+    checkedPhrase.ElementAt(i);
+    
+    suggestions += suggestedCorrection.suggestion;
+    
+    SearchResults.Add(new Models.SpellCheckCall.SpellCol
+    
+    {
+    
+    spellcol = suggestedCorrection
+    
+    });
+    
+    }
+    
+    if (suggestions == string.Empty)
+    
+    {
+    
+    return originalEntityInput;
+    
+    }
+    
+    else
+    
+    {
+    
+    foreach (var phrase in checkedPhrase)
+    
+    {
+    
+    var oldWord = phrase.token.Replace("Wrong Word : ", string.Empty);
+    
+    originalEntityInput = originalEntityInput.Replace(oldWord,
+    phrase.suggestion);
+    
+    }
+    
+    return originalEntityInput;
+    
+    }
+    
+    }
 
 These routines are called proactively anytime a new element input by the
 user is going to be used, searched for, or stored in the database. Spell
@@ -999,8 +989,7 @@ what they meant, the bot will provide a suggestion and prompt the user
 to confirm if the corrected query is indeed what they had intended to
 enter.
 
-![](media/image12.png){width="3.4010564304461943in"
-height="3.8854166666666665in"}
+![](https://github.com/viaSport/viaSport-Inclusion-Bot/blob/master/images/bot-snapshot-spellcheck.PNG)
 
 Database
 --------
@@ -1028,8 +1017,7 @@ access to the database, allowing the viaSport team to modify its
 contents as they see fit.
 
 #### Table Structure
-
-![](media/image13.jpeg){width="6.5in" height="4.738194444444445in"}
+![](https://github.com/viaSport/viaSport-Inclusion-Bot/blob/master/images/viaSport_database_table_reports.jpg.png)
 
 #### **Learning**: Singularizing Entities to Reduce Database Redundancy
 
@@ -1044,51 +1032,51 @@ singularize the entities, but it is possible to use the
 PluralizationService class in the System.Data.Entity.Design namespace to
 perform this action. The custom Singularize method is shown below:
 
-public string Singularize(string text)
-
-{
-
-var CI = new CultureInfo("en-US");
-
-var depluralizer = PluralizationService.CreateService(CI);
-
-var returnText = text;
-
-//var singularText = Singularize(text);
-
-if (depluralizer.IsPlural(text))
-
-{
-
-//convert message to singular form
-
-returnText = depluralizer.Singularize(text);
-
-}
-
-//a few hardcoded examples we will likely encounter, the Pluralizer
-doesn't recognize these as plurals
-
-if (text == "people")
-
-{
-
-text = "person";
-
-}
-
-else
-
-{
-
-//do nothing because text is already the desired result
-
-}
-
-return returnText.ToLower();
-
-}
-
+    public string Singularize(string text)
+    
+    {
+    
+    var CI = new CultureInfo("en-US");
+    
+    var depluralizer = PluralizationService.CreateService(CI);
+    
+    var returnText = text;
+    
+    //var singularText = Singularize(text);
+    
+    if (depluralizer.IsPlural(text))
+    
+    {
+    
+    //convert message to singular form
+    
+    returnText = depluralizer.Singularize(text);
+    
+    }
+    
+    //a few hardcoded examples we will likely encounter, the Pluralizer
+    doesn't recognize these as plurals
+    
+    if (text == "people")
+    
+    {
+    
+    text = "person";
+    
+    }
+    
+    else
+    
+    {
+    
+    //do nothing because text is already the desired result
+    
+    }
+    
+    return returnText.ToLower();
+    
+    }
+    
 Implementation of Outdated Term Correction
 ------------------------------------------
 
@@ -1119,7 +1107,8 @@ time there is user input. As soon as the user inputs the outdated term,
 it will automatically search the database for the preferred term. The
 syntax used to perform this function is:
 
-await context.PostAsync(BotDbStrings.MakeItAcceptable());
+
+    await context.PostAsync(BotDbStrings.MakeItAcceptable());
 
 Power BI Embedded Implementation
 --------------------------------
@@ -1167,13 +1156,11 @@ fact the only relevant action to take was to create a workspace
 collection. At this step, a workspace collection name, subscription
 name, resource group, and location were provided.
 
-![](media/image14.png){width="4.458333333333333in"
-height="3.7529068241469816in"}
+![](https://github.com/viaSport/viaSport-Inclusion-Bot/blob/master/images/viasport_powerbi_embedded_provisioning_1.png)
 
 The next step was to get access keys and review existing workspaces.
 
-![C:\\Users\\sbaydach\\AppData\\Local\\Temp\\SNAGHTML352ede.PNG](media/image15.png){width="5.041666666666667in"
-height="3.25961176727909in"}
+![](https://github.com/viaSport/viaSport-Inclusion-Bot/blob/master/images/viasport_powerbi_embedded_provisioning_2.png)
 
 **Learning**: Because PowerBI Embedded works better with workspaces than
 collections, two different workspaces to host the reports. The first one
@@ -1212,8 +1199,7 @@ Before implementing any Power BI Embedded related code, it is important
 to add several NuGet packages (Microsoft.PowerBI.Core and
 Microsoft.PowerBI.API):
 
-![](media/image16.png){width="4.223958880139983in"
-height="3.5849496937882765in"}
+![](https://github.com/viaSport/viaSport-Inclusion-Bot/blob/master/images/viaSport_nuget_configuration.png)
 
 **Learning**: If you code does not compile due to a problem with
 Newtonsoft.Json, the library simply needs to be updated to the latest
@@ -1223,26 +1209,26 @@ Using the references above it is possible to implement some methods to
 work with the workspace collection and workspaces inside. Here are some
 of these methods:
 
-static async Task&lt;PowerBIClient&gt; CreateClient()
-
-{
-
-// Create a token credentials with "AppKey" type
-
-var credentials = new TokenCredentials(accessKey, "AppKey");
-
-// Instantiate your Power BI client passing in the required credentials
-
-var client = new PowerBIClient(credentials);
-
-// Override the api endpoint base URL. Default value is
-https://api.powerbi.com
-
-client.BaseUri = new Uri(apiEndpointUri);
-
-return client;
-
-}
+    static async Task&lt;PowerBIClient&gt; CreateClient()
+    
+    {
+    
+    // Create a token credentials with "AppKey" type
+    
+    var credentials = new TokenCredentials(accessKey, "AppKey");
+    
+    // Instantiate your Power BI client passing in the required credentials
+    
+    var client = new PowerBIClient(credentials);
+    
+    // Override the api endpoint base URL. Default value is
+    https://api.powerbi.com
+    
+    client.BaseUri = new Uri(apiEndpointUri);
+    
+    return client;
+    
+    }
 
 This method may be used to create a client reference to the Power BI
 Embedded service.
@@ -1250,67 +1236,67 @@ Embedded service.
 The next couple methods make it possible to create a new workspace if
 needed and get a list of all available workspaces inside the collection:
 
-static async Task&lt;Workspace&gt; CreateWorkspace(string
-workspaceCollectionName, string workspaceName)
-
-{
-
-using (var client = await CreateClient())
-
-{
-
-return await
-client.Workspaces.PostWorkspaceAsync(workspaceCollectionName, new
-CreateWorkspaceRequest(workspaceName));
-
-}
-
-}
-
-static async Task&lt;IEnumerable&lt;Workspace&gt;&gt;
-GetWorkspaces(string workspaceCollectionName)
-
-{
-
-using (var client = await CreateClient())
-
-{
-
-var response = await
-client.Workspaces.GetWorkspacesByCollectionNameAsync(workspaceCollectionName);
-
-return response.Value;
-
-}
-
-}
+    static async Task&lt;Workspace&gt; CreateWorkspace(string
+    workspaceCollectionName, string workspaceName)
+    
+    {
+    
+    using (var client = await CreateClient())
+    
+    {
+    
+    return await
+    client.Workspaces.PostWorkspaceAsync(workspaceCollectionName, new
+    CreateWorkspaceRequest(workspaceName));
+    
+    }
+    
+    }
+    
+    static async Task&lt;IEnumerable&lt;Workspace&gt;&gt;
+    GetWorkspaces(string workspaceCollectionName)
+    
+    {
+    
+    using (var client = await CreateClient())
+    
+    {
+    
+    var response = await
+    client.Workspaces.GetWorkspacesByCollectionNameAsync(workspaceCollectionName);
+    
+    return response.Value;
+    
+    }
+    
+    }
 
 The methods above are used to check if internal and external workspaces
 exist. If they do not, they should be created:
 
-var workspaces = await GetWorkspaces(workspaceCollectionName);
-
-var internalWorkspace = (from a in workspaces where
-a.DisplayName.Equals(workspaceNameInternal) select a).FirstOrDefault();
-
-if (internalWorkspace==null)
-
-{
-
-internalWorkspace = await CreateWorkspace(workspaceCollectionName,
-workspaceNameInternal);
-
-Console.WriteLine("Workspace for internal reports is created");
-
-}
-
-else
-
-{
-
-Console.WriteLine("Workspace for internal reports is found");
-
-}
+    var workspaces = await GetWorkspaces(workspaceCollectionName);
+    
+    var internalWorkspace = (from a in workspaces where
+    a.DisplayName.Equals(workspaceNameInternal) select a).FirstOrDefault();
+    
+    if (internalWorkspace==null)
+    
+    {
+    
+    internalWorkspace = await CreateWorkspace(workspaceCollectionName,
+    workspaceNameInternal);
+    
+    Console.WriteLine("Workspace for internal reports is created");
+    
+    }
+    
+    else
+    
+    {
+    
+    Console.WriteLine("Workspace for internal reports is found");
+    
+    }
 
 In order to upload new reports to the collection, the existing one must
 first be deleted.
@@ -1323,71 +1309,71 @@ cannot exist without a dataset.
 To delete existing datasets in a workspace it is possible to use the
 following method:
 
-static async Task DeleteAllDatasets(string workspaceCollectionName,
-string workspaceId)
-
-{
-
-using (var client = await CreateClient())
-
-{
-
-ODataResponseListDataset response = await
-client.Datasets.GetDatasetsAsync(workspaceCollectionName, workspaceId);
-
-if (response.Value.Any())
-
-{
-
-foreach (Dataset d in response.Value)
-
-{
-
-await client.Datasets.DeleteDatasetByIdAsync(workspaceCollectionName,
-workspaceId,d.Id);
-
-Console.WriteLine("{0}: {1}", d.Name, d.Id);
-
-}
-
-}
-
-else
-
-{
-
-Console.WriteLine("No Datasets found in this workspace");
-
-}
-
-}
-
-}
+    static async Task DeleteAllDatasets(string workspaceCollectionName,
+    string workspaceId)
+    
+    {
+    
+    using (var client = await CreateClient())
+    
+    {
+    
+    ODataResponseListDataset response = await
+    client.Datasets.GetDatasetsAsync(workspaceCollectionName, workspaceId);
+    
+    if (response.Value.Any())
+    
+    {
+    
+    foreach (Dataset d in response.Value)
+    
+    {
+    
+    await client.Datasets.DeleteDatasetByIdAsync(workspaceCollectionName,
+    workspaceId,d.Id);
+    
+    Console.WriteLine("{0}: {1}", d.Name, d.Id);
+    
+    }
+    
+    }
+    
+    else
+    
+    {
+    
+    Console.WriteLine("No Datasets found in this workspace");
+    
+    }
+    
+    }
+    
+    }
 
 The Power BI Embedded API makes it possible to work with datasets by ID.
 The next step is to upload reports and update connection strings:
 
-foreach (var file in files)
-
-{
-
-Console.WriteLine(\$"Importing {file}");
-
-string dataSetTempName = String.Format(\$"dataSetName
-{Guid.NewGuid().ToString()}");
-
-var import = await ImportPbix(workspaceCollectionName,
-internalWorkspace.WorkspaceId, dataSetTempName, file);
-
-Console.WriteLine(\$"Updating connection string for {file}");
-
-var dataSetID = (from a in import.Datasets where
-a.Name.Equals(dataSetTempName) select a.Id).FirstOrDefault();
-
-await UpdateConnection(workspaceCollectionName,
-internalWorkspace.WorkspaceId, dataSetID, sqlUserName, sqlPassword);
-
-}
+    foreach (var file in files)
+    
+    {
+    
+    Console.WriteLine(\$"Importing {file}");
+    
+    string dataSetTempName = String.Format(\$"dataSetName
+    {Guid.NewGuid().ToString()}");
+    
+    var import = await ImportPbix(workspaceCollectionName,
+    internalWorkspace.WorkspaceId, dataSetTempName, file);
+    
+    Console.WriteLine(\$"Updating connection string for {file}");
+    
+    var dataSetID = (from a in import.Datasets where
+    a.Name.Equals(dataSetTempName) select a.Id).FirstOrDefault();
+    
+    await UpdateConnection(workspaceCollectionName,
+    internalWorkspace.WorkspaceId, dataSetID, sqlUserName, sqlPassword);
+    
+    }
 
 In the code above, it is clear that the ImportPbix method accepts a
 dataset name, but not ID. The ID itself should be generated by Azure
@@ -1407,19 +1393,20 @@ configuration file was added that is passed to the application as a
 command line parameter. To simplify the format for the partner, this was
 formatted as a list of strings, ReportDescription.txt:
 
-external
+    external
+    
+    C:\\Users\\sbaydach\\Source\\Repos\\Power BI
+    Analytics\\ProvisionPowerBIWorkspaces\\ProvisionPowerBIWorkspaces\\Reports\\External\\basicReport.pbix
+    
+    viaSport Basic Report
+    
+    internal
+    
+    C:\\Users\\sbaydach\\Source\\Repos\\Power BI
+    Analytics\\ProvisionPowerBIWorkspaces\\ProvisionPowerBIWorkspaces\\Reports\\Internal\\basicReportsLive.pbix
 
-C:\\Users\\sbaydach\\Source\\Repos\\Power BI
-Analytics\\ProvisionPowerBIWorkspaces\\ProvisionPowerBIWorkspaces\\Reports\\External\\basicReport.pbix
 
-viaSport Basic Report
-
-internal
-
-C:\\Users\\sbaydach\\Source\\Repos\\Power BI
-Analytics\\ProvisionPowerBIWorkspaces\\ProvisionPowerBIWorkspaces\\Reports\\Internal\\basicReportsLive.pbix
-
-viaSport Basic LIVE Report
+    viaSport Basic LIVE Report
 
 The first string is a type of report (external or internal). The second
 string is a path to existing report. Finally, the last string is a
@@ -1428,108 +1415,108 @@ report (dataset) name.
 Below are two methods that upload a new report and update a connection
 string:
 
-static async Task&lt;Import&gt; ImportPbix(string
-workspaceCollectionName, string workspaceId, string datasetName, string
-filePath)
-
-{
-
-using (var fileStream = File.OpenRead(filePath.Trim('"')))
-
-{
-
-using (var client = await CreateClient())
-
-{
-
-// Set request timeout to support uploading large PBIX files
-
-client.HttpClient.Timeout = TimeSpan.FromMinutes(60);
-
-client.HttpClient.DefaultRequestHeaders.Add("ActivityId",
-Guid.NewGuid().ToString());
-
-// Import PBIX file from the file stream
-
-var import = await
-client.Imports.PostImportWithFileAsync(workspaceCollectionName,
-workspaceId, fileStream, datasetName);
-
-// Example of polling the import to check when the import has succeeded.
-
-while (import.ImportState != "Succeeded" && import.ImportState !=
-"Failed")
-
-{
-
-import = await
-client.Imports.GetImportByIdAsync(workspaceCollectionName, workspaceId,
-import.Id);
-
-Console.WriteLine("Checking import state... {0}", import.ImportState);
-
-Thread.Sleep(1000);
-
-}
-
-return import;
-
-}
-
-}
-
-}
-
-static async Task UpdateConnection(string workspaceCollectionName,
-string workspaceId, string datasetId, string login, string password)
-
-{
-
-using (var client = await CreateClient())
-
-{
-
-var datasources = await
-client.Datasets.GetGatewayDatasourcesAsync(workspaceCollectionName,
-workspaceId, datasetId);
-
-// Reset your connection credentials
-
-var delta = new GatewayDatasource
-
-{
-
-CredentialType = "Basic",
-
-BasicCredentials = new BasicCredentials
-
-{
-
-Username = login,
-
-Password = password
-
-}
-
-};
-
-if (datasources.Value.Count != 1)
-
-{
-
-Console.Write("Expected one datasource, updating the first");
-
-}
-
-// Update the datasource with the specified credentials
-
-await client.Gateways.PatchDatasourceAsync(workspaceCollectionName,
-workspaceId, datasources.Value\[0\].GatewayId,
-datasources.Value\[0\].Id, delta);
-
-}
-
-}
+    static async Task&lt;Import&gt; ImportPbix(string
+    workspaceCollectionName, string workspaceId, string datasetName, string
+    filePath)
+    
+    {
+    
+    using (var fileStream = File.OpenRead(filePath.Trim('"')))
+    
+    {
+    
+    using (var client = await CreateClient())
+    
+    {
+    
+    // Set request timeout to support uploading large PBIX files
+    
+    client.HttpClient.Timeout = TimeSpan.FromMinutes(60);
+    
+    client.HttpClient.DefaultRequestHeaders.Add("ActivityId",
+    Guid.NewGuid().ToString());
+    
+    // Import PBIX file from the file stream
+    
+    var import = await
+    client.Imports.PostImportWithFileAsync(workspaceCollectionName,
+    workspaceId, fileStream, datasetName);
+    
+    // Example of polling the import to check when the import has succeeded.
+    
+    while (import.ImportState != "Succeeded" && import.ImportState !=
+    "Failed")
+    
+    {
+    
+    import = await
+    client.Imports.GetImportByIdAsync(workspaceCollectionName, workspaceId,
+    import.Id);
+    
+    Console.WriteLine("Checking import state... {0}", import.ImportState);
+    
+    Thread.Sleep(1000);
+    
+    }
+    
+    return import;
+    
+    }
+    
+    }
+    
+    }
+    
+    static async Task UpdateConnection(string workspaceCollectionName,
+    string workspaceId, string datasetId, string login, string password)
+    
+    {
+    
+    using (var client = await CreateClient())
+    
+    {
+    
+    var datasources = await
+    client.Datasets.GetGatewayDatasourcesAsync(workspaceCollectionName,
+    workspaceId, datasetId);
+    
+    // Reset your connection credentials
+    
+    var delta = new GatewayDatasource
+    
+    {
+    
+    CredentialType = "Basic",
+    
+    BasicCredentials = new BasicCredentials
+    
+    {
+    
+    Username = login,
+    
+    Password = password
+    
+    }
+    
+    };
+    
+    if (datasources.Value.Count != 1)
+    
+    {
+    
+    Console.Write("Expected one datasource, updating the first");
+    
+    }
+    
+    // Update the datasource with the specified credentials
+    
+    await client.Gateways.PatchDatasourceAsync(workspaceCollectionName,
+    workspaceId, datasources.Value\[0\].GatewayId,
+    datasources.Value\[0\].Id, delta);
+    
+    }
+    
+    }
 
 The final application can be executed from the Command Prompt windows
 with just one parameter: a configuration file with information about the
@@ -1543,7 +1530,7 @@ Imported (data pre-uploaded to pbix) reports.
 
 The following diagram shows the tables used in the analytics reports:
 
-![](media/image17.png){width="6.5in" height="4.159722222222222in"}
+![](https://github.com/viaSport/viaSport-Inclusion-Bot/blob/master/images/viaSport_database_table_reports.jpg.png)
 
 Here is the list of all tables:
 
@@ -1593,111 +1580,111 @@ Framework were used, it was as simple as updating the entity framework
 model and implementing a method that save telemetry data to the database
 based on parameters:
 
-public static void UpdateAnalyticDatabase(
-
-string intentName=null,
-
-double intentScore=0,
-
-Dictionary&lt;string, EntityRecommendation&gt; entities=null,
-
-List&lt;Reference&gt; referenceIds=null)
-
-{
-
-if (intentName == null)
-
-{
-
-AddEmptyQuery();
-
-}
-
-else if (entities == null)
-
-{
-
-AddIntentQuery(intentName,(float)intentScore);
-
-}
-
-else if (referenceIds == null)
-
-{
-
-AddIntentEntitiesQuery(intentName, (float)intentScore,entities);
-
-}
-
-else
-
-{
-
-AddIntentEntitiesReferencesQuery(intentName, (float)intentScore,
-entities, referenceIds);
-
-}
-
-}
+    public static void UpdateAnalyticDatabase(
+    
+    string intentName=null,
+    
+    double intentScore=0,
+    
+    Dictionary&lt;string, EntityRecommendation&gt; entities=null,
+    
+    List&lt;Reference&gt; referenceIds=null)
+    
+    {
+    
+    if (intentName == null)
+    
+    {
+    
+    AddEmptyQuery();
+    
+    }
+    
+    else if (entities == null)
+    
+    {
+    
+    AddIntentQuery(intentName,(float)intentScore);
+    
+    }
+    
+    else if (referenceIds == null)
+    
+    {
+    
+    AddIntentEntitiesQuery(intentName, (float)intentScore,entities);
+    
+    }
+    
+    else
+    
+    {
+    
+    AddIntentEntitiesReferencesQuery(intentName, (float)intentScore,
+    entities, referenceIds);
+    
+    }
+    
+    }
 
 There are four different method calls inside that update the database
 based on type of query (availability of the parameters).
 
 Below is the code of the most complex method from the list:
 
-private static void AddIntentEntitiesReferencesQuery(string intentName,
-float intentScore, Dictionary&lt;string, EntityRecommendation&gt;
-entities,
+    private static void AddIntentEntitiesReferencesQuery(string intentName,
+    float intentScore, Dictionary&lt;string, EntityRecommendation&gt;
+    entities,
+    
+    List&lt;Reference&gt; referenceIds)
+    
+    {
+    
+    Query q = new Query
+    
+    {
+    
+    SessionId = currentSessionId,
+    
+    UtcDateTime = DateTime.UtcNow,
+    
+    Entities = new EntitySet&lt;Entity&gt;(),
+    
+    ReferenceProvideds = new EntitySet&lt;ReferenceProvided&gt;(),
+    
+    Intents = new EntitySet&lt;Intent&gt;()
+    
+    { new Intent() { IntentName = intentName, IntentScore = intentScore} }
+    
+    };
+    
+    foreach (var e in entities)
+    
+    {
+    
+    if (e.Value.Score!=null)
+    
+    q.Entities.Add(new Entity() { EntityValue = e.Value.Entity, EntityType =
+    e.Value.Type, EntityScore = (float)e.Value.Score });
+    
+    }
+    
+    foreach (var rid in referenceIds)
+    
+    {
+    
+    q.ReferenceProvideds.Add(new ReferenceProvided() {ReferenceId =
+    rid.Id});
+    
+    }
+    
+    context.Queries.InsertOnSubmit(q);
+    
+    context.SubmitChanges();
+    
+    }
 
-List&lt;Reference&gt; referenceIds)
-
-{
-
-Query q = new Query
-
-{
-
-SessionId = currentSessionId,
-
-UtcDateTime = DateTime.UtcNow,
-
-Entities = new EntitySet&lt;Entity&gt;(),
-
-ReferenceProvideds = new EntitySet&lt;ReferenceProvided&gt;(),
-
-Intents = new EntitySet&lt;Intent&gt;()
-
-{ new Intent() { IntentName = intentName, IntentScore = intentScore} }
-
-};
-
-foreach (var e in entities)
-
-{
-
-if (e.Value.Score!=null)
-
-q.Entities.Add(new Entity() { EntityValue = e.Value.Entity, EntityType =
-e.Value.Type, EntityScore = (float)e.Value.Score });
-
-}
-
-foreach (var rid in referenceIds)
-
-{
-
-q.ReferenceProvideds.Add(new ReferenceProvided() {ReferenceId =
-rid.Id});
-
-}
-
-context.Queries.InsertOnSubmit(q);
-
-context.SubmitChanges();
-
-}
-
-The most important challenge there is just find the right place to call
+The most important challenge there is just finding the right place to call
 this method from the bot.
 
 ### Design and Publishing
@@ -1705,8 +1692,7 @@ this method from the bot.
 Power BI Desktop is a free tool that makes it possible to design Direct
 Query (Live) and Imported reports:
 
-![](media/image18.png){width="5.046875546806649in"
-height="2.4112849956255467in"}
+![](https://github.com/viaSport/viaSport-Inclusion-Bot/blob/master/images/viasport_powerbi_desktop.png)
 
 The Power BI Desktop tool can be downloaded and installed using this
 link: <https://powerbi.microsoft.com/en-us/desktop/>
@@ -1733,16 +1719,14 @@ them:
 1.  General Report that contains information about visitors and the most
     popular references
 
-![](media/image19.png){width="5.536458880139983in"
-height="4.236926946631671in"}
+![](https://github.com/viaSport/viaSport-Inclusion-Bot/blob/master/images/viaSport_report_general.png)
 
-1.  By Query Report that shows different kinds of queries (by subject,
+2.  By Query Report that shows different kinds of queries (by subject,
     by sport name, by disability type)
 
-![](media/image20.png){width="5.911458880139983in"
-height="4.47653980752406in"}
+![](https://github.com/viaSport/viaSport-Inclusion-Bot/blob/master/images/viaSport_report_byquery.png)
 
-1.  Performance Report that shows the most popular intents and number of
+3.  Performance Report that shows the most popular intents and number of
     successful and unsuccessful queries. Note that the report below is
     connected to the development database, which was used for testing,
     so the data displayed below reflects a greater number of
@@ -1750,8 +1734,7 @@ height="4.47653980752406in"}
     eliminated from the reports when the bot goes live, so data
     presented to viaSport will reflect real user queries.
 
-![](media/image21.png){width="5.682292213473316in"
-height="4.335781933508311in"}
+![](https://github.com/viaSport/viaSport-Inclusion-Bot/blob/master/images/viaSport_report_performance.png)
 
 The reports were designed for both live and import mode. Once in
 production, viaSport will be able to select which reports to publish
@@ -1761,8 +1744,7 @@ externally.
 check relations in Import mode because some of them could be predicted
 incorrectly. This can be done using the Relationships tab
 
-![](media/image22.png){width="4.869792213473316in"
-height="3.2376837270341206in"}
+![](https://github.com/viaSport/viaSport-Inclusion-Bot/blob/master/images/viasport_powerbi_relationships_tab.png)
 
 **Learning**: It is possible to create new columns based on expressions
 for both types of reports, but expressions will be different.
@@ -1770,8 +1752,8 @@ DirectQuery Mode has some limitations that are related to measurement
 fields and datatime field requires additional expression to be used. For
 example:
 
-UtcDate =
-DATE(YEAR(Query\[UtcDateTime\]),MONTH(Query\[UtcDateTime\]),DAY(Query\[UtcDateTime\]))
+    UtcDate =
+    DATE(YEAR(Query\[UtcDateTime\]),MONTH(Query\[UtcDateTime\]),DAY(Query\[UtcDateTime\]))
 
 In the Import mode, a general datetime can be used and it will be
 possible to select needed components. As a result, DirectQuery reports
@@ -1788,8 +1770,7 @@ ASP.NET MVC template:
 Authentication was added and the template was adapted to work with two
 workspaces at the same time:
 
-![](media/image23.png){width="6.203125546806649in"
-height="4.28669072615923in"}
+![](https://github.com/viaSport/viaSport-Inclusion-Bot/blob/master/images/viaSport_live_reports_dashboard.png)
 
 Once the bot is in production reports will be embedded into production
 portal.
@@ -1826,7 +1807,7 @@ not work with Visual Studio 2015, which is the version of Visual Studio
 that was used to develop this bot. The following figure shows the
 configuration that worked in VS 2015:
 
-![](media/image24.png){width="6.5in" height="2.2354166666666666in"}
+![](https://github.com/viaSport/viaSport-Inclusion-Bot/blob/master/images/viaSport_nuget_configuration_2.png)
 
 **Learning**: It is possible to implement Speech-to-Text using the UWP
 API, but doing so with the Windows 10 Anniversary edition or newer will
@@ -1835,8 +1816,7 @@ accepted from the application and the setting is hidden deeply in the
 Windows Settings – a potential problem in usability if the purpose of
 this application is accessibility.
 
-![](media/image25.png){width="4.786458880139983in"
-height="2.697496719160105in"}
+![](https://github.com/viaSport/viaSport-Inclusion-Bot/blob/master/images/viaSport_user_permission_speech.png)
 
 **Learning**: When implementing a custom bot interface in a UWP app, it
 is not possible to use ListView and other collection-enabled user
@@ -1850,132 +1830,132 @@ steps as identified by the development team:
 
 To initialize a conversation you can use the following block:
 
-async Task InitializeBotConversation()
-
-{
-
-client = new DirectLineClient("key");
-
-conversation = await client.Conversations.StartConversationAsync();
-
-await StartListening();
-
-await ReadBotMessagesAsync(client, conversation.ConversationId);
-
-}
+    async Task InitializeBotConversation()
+    
+    {
+    
+    client = new DirectLineClient("key");
+    
+    conversation = await client.Conversations.StartConversationAsync();
+    
+    await StartListening();
+    
+    await ReadBotMessagesAsync(client, conversation.ConversationId);
+    
+    }
 
 The following event handler reads all messages from the bot and display
 them one by one. Pay attention that the collection with messages
 contains all messages (users and bots) including old messages:
 
-async Task ReadBotMessagesAsync(DirectLineClient client, string
-conversationId)
-
-{
-
-string watermark = null;
-
-while (true)
-
-{
-
-var messages = await
-client.Conversations.GetActivitiesAsync(conversationId);
-
-watermark = messages?.Watermark;
-
-var messagesFromBotText = from x in messages.Activities
-
-select x;
-
-foreach (var message in messagesFromBotText)
-
-{
-
-await
-Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
-
-() =&gt;
-
-{
-
-var res = (from a in MessageIDs where a == message.Id select a).Count();
-
-if (res==0)
-
-{
-
-MessageIDs.Add(message.Id);
-
-if (message.From.Name.Contains("viaSport"))
-
-{
-
-if ((message.Text != null) && (message.Text.Length &gt; 0))
-
-{
-
-chatWindow.Children.Add(new BotMessageText() { Text = message.Text });
-
-TalkSomething(message.Text);
-
-}
-
-else if (message.Attachments.Count&gt;0)
-
-{
-
-}
-
-}
-
-else
-
-{
-
-chatWindow.Children.Add(new UserMessageText() { Text = \$"Sergii:
-{message.Text}" });
-
-}
-
-}
-
-});
-
-}
-
-await Task.Delay(TimeSpan.FromSeconds(2)).ConfigureAwait(false);
-
-}
-
-}
+    async Task ReadBotMessagesAsync(DirectLineClient client, string
+    conversationId)
+    
+    {
+    
+    string watermark = null;
+    
+    while (true)
+    
+    {
+    
+    var messages = await
+    client.Conversations.GetActivitiesAsync(conversationId);
+    
+    watermark = messages?.Watermark;
+    
+    var messagesFromBotText = from x in messages.Activities
+    
+    select x;
+    
+    foreach (var message in messagesFromBotText)
+    
+    {
+    
+    await
+    Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+    
+    () =&gt;
+    
+    {
+    
+    var res = (from a in MessageIDs where a == message.Id select a).Count();
+    
+    if (res==0)
+    
+    {
+    
+    MessageIDs.Add(message.Id);
+    
+    if (message.From.Name.Contains("viaSport"))
+    
+    {
+    
+    if ((message.Text != null) && (message.Text.Length &gt; 0))
+    
+    {
+    
+    chatWindow.Children.Add(new BotMessageText() { Text = message.Text });
+    
+    TalkSomething(message.Text);
+    
+    }
+    
+    else if (message.Attachments.Count&gt;0)
+    
+    {
+    
+    }
+    
+    }
+    
+    else
+    
+    {
+    
+    chatWindow.Children.Add(new UserMessageText() { Text = \$"Sergii:
+    {message.Text}" });
+    
+    }
+    
+    }
+    
+    });
+    
+    }
+    
+    await Task.Delay(TimeSpan.FromSeconds(2)).ConfigureAwait(false);
+    
+    }
+    
+    }
 
 Finally, the following code shows how to send messages to a user:
 
-async Task sendMessageToBot(string text)
-
-{
-
-if (conversation!=null)
-
-{
-
-IMessageActivity message = Activity.CreateMessageActivity();
-
-message.From = new ChannelAccount() { Id = "sbaydach@microsoft.com",
-Name = "Sergii" }; ;
-
-message.Text = text;
-
-message.Locale = "en-Us";
-
-await
-client.Conversations.PostActivityAsync(conversation.ConversationId,
-(Activity)message);
-
-}
-
-}
+    async Task sendMessageToBot(string text)
+    
+    {
+    
+    if (conversation!=null)
+    
+    {
+    
+    IMessageActivity message = Activity.CreateMessageActivity();
+    
+    message.From = new ChannelAccount() { Id = "sbaydach@microsoft.com",
+    Name = "Sergii" }; ;
+    
+    message.Text = text;
+    
+    message.Locale = "en-Us";
+    
+    await
+    client.Conversations.PostActivityAsync(conversation.ConversationId,
+    (Activity)message);
+    
+    }
+    
+    }
 
 Conclusion
 ==========
