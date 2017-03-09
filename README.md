@@ -281,7 +281,7 @@ access rich insights into the bot’s performance.
 
 The following diagram illustrates the project architecture:
 
-![](https://github.com/viaSport/viaSport-Inclusion-Bot/blob/master/images/viaSport_architecture_diagram_main.PNG)
+![](./images/viaSport_architecture_diagram_main.PNG)
 
 Bot Framework SDK
 -----------------
