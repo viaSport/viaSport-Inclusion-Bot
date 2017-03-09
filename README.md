@@ -415,36 +415,36 @@ recognized by LUIS. In this case, the bot
     
     {
     
-    this.query = result.Query;
-    
-    await context.LoadAsync(new CancellationToken());
-    
-    PostTelemetryCustomEvent("none", 0, false);
-    
-    string message = \$"Sorry I did not understand you: ";
-    
-    if (result.Query.ToLower() == "version")
-    
-    {
-    
-    message = "viaSport Disability Resource Bot, version: "
-    
-    +
-    System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
-    
-    await context.PostAsync(BotDbStrings.MakeItAcceptable(message));
-    
-    context.Wait(MessageReceived);
-    
-    }
-    
-    else if (result != null && result.Query != null)
-    
-    {
-    
-    await ConfirmNoneIntent(context, result);
-    
-    }
+	    this.query = result.Query;
+	    
+	    await context.LoadAsync(new CancellationToken());
+	    
+	    PostTelemetryCustomEvent("none", 0, false);
+	    
+	    string message = \$"Sorry I did not understand you: ";
+	    
+	    if (result.Query.ToLower() == "version")
+	    
+	    {
+	    
+		    message = "viaSport Disability Resource Bot, version: "
+		    
+		    +
+		    System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+		    
+		    await context.PostAsync(BotDbStrings.MakeItAcceptable(message));
+		    
+		    context.Wait(MessageReceived);
+	    
+	    }
+	    
+	    else if (result != null && result.Query != null)
+	    
+	    {
+	    
+	   		await ConfirmNoneIntent(context, result);
+	    
+	    }
     
     }
 
@@ -473,56 +473,56 @@ Below is the code for the routine that handles this case.
     
     {
     
-    var checkedPhrase = await SpellCheck(result.Query);
-    
-    var suggestions = string.Empty;
-    
-    this.newMessage = this.query;
-    
-    foreach (var phrase in checkedPhrase)
-    
-    {
-    
-    var oldWord = phrase.token.Replace("Wrong Word : ", string.Empty);
-    
-    this.newMessage = this.newMessage.Replace(oldWord, phrase.suggestion);
-    
-    }
-    
-    if (this.newMessage == this.query)
-    
-    {
-    
-    BotDbAnalytics.UpdateAnalyticDatabase();
-    
-    BotDB botDB = new BotDB();
-    
-    var message = string.Format(botDB.GetString(null, "none"),
-    result.Query);
-    
-    await context.PostAsync(BotDbStrings.MakeItAcceptable(message));
-    
-    context.Wait(this.MessageReceived);
-    
-    }
-    
-    else
-    
-    {
-    
-    PromptDialog.Confirm(
-    
-    context,
-    
-    this.OnSpellCheckIntent,
-    
-    \$"Did you mean '{this.newMessage}'?",
-    
-    "Didn't get that!",
-    
-    promptStyle: PromptStyle.None);
-    
-    }
+	    var checkedPhrase = await SpellCheck(result.Query);
+	    
+	    var suggestions = string.Empty;
+	    
+	    this.newMessage = this.query;
+	    
+	    foreach (var phrase in checkedPhrase)
+	    
+	    {
+	    
+		    var oldWord = phrase.token.Replace("Wrong Word : ", string.Empty);
+		    
+		    this.newMessage = this.newMessage.Replace(oldWord, phrase.suggestion);
+	    
+	    }
+	    
+	    if (this.newMessage == this.query)
+	    
+	    {
+	    
+		    BotDbAnalytics.UpdateAnalyticDatabase();
+		    
+		    BotDB botDB = new BotDB();
+		    
+		    var message = string.Format(botDB.GetString(null, "none"),
+		    result.Query);
+		    
+		    await context.PostAsync(BotDbStrings.MakeItAcceptable(message));
+		    
+		    context.Wait(this.MessageReceived);
+	    
+	    }
+	    
+	    else
+	    
+	    {
+	    
+		    PromptDialog.Confirm(
+		    
+		    context,
+		    
+		    this.OnSpellCheckIntent,
+		    
+		    \$"Did you mean '{this.newMessage}'?",
+		    
+		    "Didn't get that!",
+		    
+		    promptStyle: PromptStyle.None);
+	    
+	    }
     
     }
 
@@ -543,18 +543,18 @@ Below is the code that handles the Hello intent.
     
     {
     
-    PostTelemetryCustomEvent("hello", 0, false);
-    
-    BotDB botDB = new BotDB();
-    
-    var message = botDB.GetString(null, "viasport.intent.hello.greeting");
-    
-    BotDbAnalytics.UpdateAnalyticDatabase(result.Intents\[0\].Intent,
-    (double)result.Intents\[0\].Score);
-    
-    await context.PostAsync(BotDbStrings.MakeItAcceptable(message));
-    
-    context.Wait(MessageReceived);
+	    PostTelemetryCustomEvent("hello", 0, false);
+	    
+	    BotDB botDB = new BotDB();
+	    
+	    var message = botDB.GetString(null, "viasport.intent.hello.greeting");
+	    
+	    BotDbAnalytics.UpdateAnalyticDatabase(result.Intents\[0\].Intent,
+	    (double)result.Intents\[0\].Score);
+	    
+	    await context.PostAsync(BotDbStrings.MakeItAcceptable(message));
+	    
+	    context.Wait(MessageReceived);
     
     }
 
@@ -575,19 +575,19 @@ next input, which will then be fed through LUIS.
     
     {
     
-    PostTelemetryCustomEvent("hello", 0, false);
-    
-    BotDB botDB = new BotDB();
-    
-    var message = string.Format(botDB.GetString(null,
-    "viasport.intent.help.greeting"), "\\n", "\\n", "\\n");
-    
-    BotDbAnalytics.UpdateAnalyticDatabase(result.Intents\[0\].Intent,
-    (double)result.Intents\[0\].Score);
-    
-    await context.PostAsync(BotDbStrings.MakeItAcceptable(message));
-    
-    context.Wait(MessageReceived);
+	    PostTelemetryCustomEvent("hello", 0, false);
+	    
+	    BotDB botDB = new BotDB();
+	    
+	    var message = string.Format(botDB.GetString(null,
+	    "viasport.intent.help.greeting"), "\\n", "\\n", "\\n");
+	    
+	    BotDbAnalytics.UpdateAnalyticDatabase(result.Intents\[0\].Intent,
+	    (double)result.Intents\[0\].Score);
+	    
+	    await context.PostAsync(BotDbStrings.MakeItAcceptable(message));
+	    
+	    context.Wait(MessageReceived);
     
     }
 
@@ -637,65 +637,65 @@ into LoadAllEntitiesAsync.
     
     {
     
-    if (result.Intents\[0\].Score &lt; AcceptableScore)
-    
-    {
-    
-    await this.None(context, result);
-    
-    }
-    
-    else
-    
-    {
-    
-    await LoadAllEntitiesAsync(context, result);
-    
-    query = result.Query;
-    
-    intent = result.Intents\[0\].Intent;
-    
-    intentScore = (double)result.Intents\[0\].Score;
-    
-    PostTelemetryCustomEvent("howtocoach", 0, false);
-    
-    respondToLuis = true;
-    
-    if (respondToLuis)
-    
-    {
-    
-    await CheckResultsAsync(context);
-    
-    }
-    
-    }
+	    if (result.Intents\[0\].Score &lt; AcceptableScore)
+	    
+	    {
+	    
+	    	await this.None(context, result);
+	    
+	    }
+	    
+	    else
+	    
+	    {
+	    
+		    await LoadAllEntitiesAsync(context, result);
+		    
+		    query = result.Query;
+		    
+		    intent = result.Intents\[0\].Intent;
+		    
+		    intentScore = (double)result.Intents\[0\].Score;
+		    
+		    PostTelemetryCustomEvent("howtocoach", 0, false);
+		    
+		    respondToLuis = true;
+		    
+		    if (respondToLuis)
+		    
+		    {
+		    
+		    	await CheckResultsAsync(context);
+		    
+		    }
+	    
+	    }
     
     }
 
-    LoadAllEntitiesAsync parses the query and loads any recognized entities
-    by calling GetEntityAsync.
+LoadAllEntitiesAsync parses the query and loads any recognized entities
+by calling GetEntityAsync.
     
     private async Task LoadAllEntitiesAsync(IDialogContext context,
     LuisResult result)
     
     {
     
-    \_entities = new Dictionary&lt;string, EntityRecommendation&gt;
-    
-    {
-    
-    {"SportName", await GetEntityAsync(context, result, "SportName")},
-    
-    {"DisabilityType", await GetEntityAsync(context, result,
-    "DisabilityType")},
-    
-    {"Subject", await GetEntityAsync(context, result, "Subject")},
-    
-    {"buildin.geography.city", await GetEntityAsync(context, result,
-    "builtin.geography.city")}
-    
-    };
+	    \_entities = new Dictionary&lt;string, EntityRecommendation&gt;
+	    
+	    {
+	    
+	    {"SportName", await GetEntityAsync(context, result, "SportName")},
+	    
+	    {"DisabilityType", await GetEntityAsync(context, result,
+	    "DisabilityType")},
+	    
+	    {"Subject", await GetEntityAsync(context, result, "Subject")},
+	    
+	    {"buildin.geography.city", await GetEntityAsync(context, result,
+	    "builtin.geography.city")}
+	    
+	    };
     
     }
 
@@ -771,7 +771,7 @@ using a simple check, as shown below:
     
     {
     
-    intent = "information on";
+    	intent = "information on";
     
     }
     
@@ -779,7 +779,7 @@ using a simple check, as shown below:
     
     {
     
-    intent = "programs for";
+    	intent = "programs for";
     
     }
 
@@ -791,102 +791,102 @@ The full OnWebSearch Task is shown below:
     
     {
     
-    var client = new HttpClient();
-    
-    var queryString = HttpUtility.ParseQueryString(string.Empty);
-    
-    client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", "&lt;BING
-    WEB SEARCH API KEY HERE&gt;");
-    
-    var intent = "coaching";
-    
-    if (intent.Contains("resource"))
-    
-    {
-    
-    intent = "information on";
-    
-    }
-    
-    else if (intent.Contains("program"))
-    
-    {
-    
-    intent = "programs for";
-    
-    }
-    
-    var sport = \_entities\["SportName"\].Entity ?? "sports";
-    
-    var subject = \_entities\["Subject"\].Entity ?? "people";
-    
-    var disability = \_entities\["DisabilityType"\].Entity ?? "with
-    disabilites";
-    
-    query = \$"{intent} {sport} {subject} {disability}";
-    
-    queryString\["q"\] = query;
-    
-    queryString\["count"\] = \_maxReferences.ToString();
-    
-    queryString\["offset"\] = "0";
-    
-    queryString\["mkt"\] = \_language;
-    
-    queryString\["safesearch"\] = "strict";
-    
-    var uri = "https://api.cognitive.microsoft.com/bing/v5.0/search?" +
-    queryString;
-    
-    var response = await client.GetAsync(uri);
-    
-    if (response.IsSuccessStatusCode)
-    
-    {
-    
-    var jsonString = response.Content.ReadAsStringAsync();
-    
-    var searchResults =
-    JsonConvert.DeserializeObject&lt;SearchResponse&gt;(jsonString.Result);
-    
-    var references = new List&lt;Reference&gt;();
-    
-    foreach (var i in searchResults.WebPages?.Value)
-    
-    {
-    
-    var reference = new Reference()
-    
-    {
-    
-    Title = i.Name,
-    
-    Subtitle = i.DisplayUrl,
-    
-    CardText = i.Snippet,
-    
-    ReferenceUri = i.Url,
-    
-    };
-    
-    references.Add(reference);
-    
-    }
-    
-    await SendResultsToPersonAsync(context, references);
-    
-    }
-    
-    else
-    
-    {
-    
-    await context.PostAsync("Sorry looks like we are having some issues with
-    our websearch!");
-    
-    await OnContactViaSport(context);
-    
-    }
+	    var client = new HttpClient();
+	    
+	    var queryString = HttpUtility.ParseQueryString(string.Empty);
+	    
+	    client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", "&lt;BING
+	    WEB SEARCH API KEY HERE&gt;");
+	    
+	    var intent = "coaching";
+	    
+	    if (intent.Contains("resource"))
+	    
+	    {
+	    
+	    	intent = "information on";
+	    
+	    }
+	    
+	    else if (intent.Contains("program"))
+	    
+	    {
+	    
+	    	intent = "programs for";
+	    
+	    }
+	    
+	    var sport = \_entities\["SportName"\].Entity ?? "sports";
+	    
+	    var subject = \_entities\["Subject"\].Entity ?? "people";
+	    
+	    var disability = \_entities\["DisabilityType"\].Entity ?? "with
+	    disabilites";
+	    
+	    query = \$"{intent} {sport} {subject} {disability}";
+	    
+	    queryString\["q"\] = query;
+	    
+	    queryString\["count"\] = \_maxReferences.ToString();
+	    
+	    queryString\["offset"\] = "0";
+	    
+	    queryString\["mkt"\] = \_language;
+	    
+	    queryString\["safesearch"\] = "strict";
+	    
+	    var uri = "https://api.cognitive.microsoft.com/bing/v5.0/search?" +
+	    queryString;
+	    
+	    var response = await client.GetAsync(uri);
+	    
+	    if (response.IsSuccessStatusCode)
+	    
+	    {
+	    
+		    var jsonString = response.Content.ReadAsStringAsync();
+		    
+		    var searchResults =
+		    JsonConvert.DeserializeObject&lt;SearchResponse&gt;(jsonString.Result);
+		    
+		    var references = new List&lt;Reference&gt;();
+		    
+		    foreach (var i in searchResults.WebPages?.Value)
+		    
+		    {
+		    
+			    var reference = new Reference()
+			    
+			    {
+			    
+				    Title = i.Name,
+				    
+				    Subtitle = i.DisplayUrl,
+				    
+				    CardText = i.Snippet,
+				    
+				    ReferenceUri = i.Url,
+				    
+				    };
+			    
+			    references.Add(reference);
+		    
+		    }
+		    
+		    await SendResultsToPersonAsync(context, references);
+		    
+		    }
+	    
+	    else
+	    
+	    {
+	    
+		    await context.PostAsync("Sorry looks like we are having some issues with
+		    our websearch!");
+		    
+		    await OnContactViaSport(context);
+	    
+	    }
     
     }
 
@@ -925,56 +925,56 @@ corrected terms.
     
     {
     
-    ObservableCollection&lt;Models.SpellCheckCall.SpellCol&gt; SearchResults
-    = new ObservableCollection&lt;Models.SpellCheckCall.SpellCol&gt;();
-    
-    var suggestions = string.Empty;
-    
-    for (int i = 0; i &lt; checkedPhrase.Count(); i++)
-    
-    {
-    
-    Models.SpellCheckCall.SpellCheck suggestedCorrection =
-    checkedPhrase.ElementAt(i);
-    
-    suggestions += suggestedCorrection.suggestion;
-    
-    SearchResults.Add(new Models.SpellCheckCall.SpellCol
-    
-    {
-    
-    spellcol = suggestedCorrection
-    
-    });
-    
-    }
-    
-    if (suggestions == string.Empty)
-    
-    {
-    
-    return originalEntityInput;
-    
-    }
-    
-    else
-    
-    {
-    
-    foreach (var phrase in checkedPhrase)
-    
-    {
-    
-    var oldWord = phrase.token.Replace("Wrong Word : ", string.Empty);
-    
-    originalEntityInput = originalEntityInput.Replace(oldWord,
-    phrase.suggestion);
-    
-    }
-    
-    return originalEntityInput;
-    
-    }
+	    ObservableCollection&lt;Models.SpellCheckCall.SpellCol&gt; SearchResults
+	    = new ObservableCollection&lt;Models.SpellCheckCall.SpellCol&gt;();
+	    
+	    var suggestions = string.Empty;
+	    
+	    for (int i = 0; i &lt; checkedPhrase.Count(); i++)
+	    
+	    {
+	    
+		    Models.SpellCheckCall.SpellCheck suggestedCorrection =
+		    checkedPhrase.ElementAt(i);
+		    
+		    suggestions += suggestedCorrection.suggestion;
+		    
+		    SearchResults.Add(new Models.SpellCheckCall.SpellCol
+		    
+		    	{
+		    
+			    spellcol = suggestedCorrection
+			    
+			    });
+	    
+	    }
+	    
+	    if (suggestions == string.Empty)
+	    
+	    {
+	    
+	    	return originalEntityInput;
+	    
+	    }
+	    
+	    else
+	    
+	    {
+	    
+		    foreach (var phrase in checkedPhrase)
+		    
+		    {
+		    
+			    var oldWord = phrase.token.Replace("Wrong Word : ", string.Empty);
+			    
+			    originalEntityInput = originalEntityInput.Replace(oldWord,
+			    phrase.suggestion);
+		    
+		    }
+		    
+		    return originalEntityInput;
+	    
+	    }
     
     }
 
@@ -1036,44 +1036,44 @@ perform this action. The custom Singularize method is shown below:
     
     {
     
-    var CI = new CultureInfo("en-US");
-    
-    var depluralizer = PluralizationService.CreateService(CI);
-    
-    var returnText = text;
-    
-    //var singularText = Singularize(text);
-    
-    if (depluralizer.IsPlural(text))
-    
-    {
-    
-    //convert message to singular form
-    
-    returnText = depluralizer.Singularize(text);
-    
-    }
-    
-    //a few hardcoded examples we will likely encounter, the Pluralizer
-    doesn't recognize these as plurals
-    
-    if (text == "people")
-    
-    {
-    
-    text = "person";
-    
-    }
-    
-    else
-    
-    {
-    
-    //do nothing because text is already the desired result
-    
-    }
-    
-    return returnText.ToLower();
+	    var CI = new CultureInfo("en-US");
+	    
+	    var depluralizer = PluralizationService.CreateService(CI);
+	    
+	    var returnText = text;
+	    
+	    //var singularText = Singularize(text);
+	    
+	    if (depluralizer.IsPlural(text))
+	    
+	    {
+	    
+		    //convert message to singular form
+		    
+		    returnText = depluralizer.Singularize(text);
+	    
+	    }
+	    
+	    //a few hardcoded examples we will likely encounter, the Pluralizer
+	    doesn't recognize these as plurals
+	    
+	    if (text == "people")
+	    
+	    {
+	    
+	    	text = "person";
+	    
+	    }
+	    
+	    else
+	    
+	    {
+	    
+	    	//do nothing because text is already the desired result
+	    
+	    }
+	    
+	    return returnText.ToLower();
     
     }
     
@@ -1213,20 +1213,20 @@ of these methods:
     
     {
     
-    // Create a token credentials with "AppKey" type
-    
-    var credentials = new TokenCredentials(accessKey, "AppKey");
-    
-    // Instantiate your Power BI client passing in the required credentials
-    
-    var client = new PowerBIClient(credentials);
-    
-    // Override the api endpoint base URL. Default value is
-    https://api.powerbi.com
-    
-    client.BaseUri = new Uri(apiEndpointUri);
-    
-    return client;
+	    // Create a token credentials with "AppKey" type
+	    
+	    var credentials = new TokenCredentials(accessKey, "AppKey");
+	    
+	    // Instantiate your Power BI client passing in the required credentials
+	    
+	    var client = new PowerBIClient(credentials);
+	    
+	    // Override the api endpoint base URL. Default value is
+	    https://api.powerbi.com
+	    
+	    client.BaseUri = new Uri(apiEndpointUri);
+	    
+	    return client;
     
     }
 
@@ -1241,15 +1241,15 @@ needed and get a list of all available workspaces inside the collection:
     
     {
     
-    using (var client = await CreateClient())
-    
-    {
-    
-    return await
-    client.Workspaces.PostWorkspaceAsync(workspaceCollectionName, new
-    CreateWorkspaceRequest(workspaceName));
-    
-    }
+	    using (var client = await CreateClient())
+	    
+	    {
+	    
+		    return await
+		    client.Workspaces.PostWorkspaceAsync(workspaceCollectionName, new
+		    CreateWorkspaceRequest(workspaceName));
+	    
+	    }
     
     }
     
@@ -1258,16 +1258,16 @@ needed and get a list of all available workspaces inside the collection:
     
     {
     
-    using (var client = await CreateClient())
-    
-    {
-    
-    var response = await
-    client.Workspaces.GetWorkspacesByCollectionNameAsync(workspaceCollectionName);
-    
-    return response.Value;
-    
-    }
+	    using (var client = await CreateClient())
+	    
+	    {
+	    
+		    var response = await
+		    client.Workspaces.GetWorkspacesByCollectionNameAsync(workspaceCollectionName);
+		    
+		    return response.Value;
+	    
+	    }
     
     }
 
@@ -1283,10 +1283,10 @@ exist. If they do not, they should be created:
     
     {
     
-    internalWorkspace = await CreateWorkspace(workspaceCollectionName,
-    workspaceNameInternal);
-    
-    Console.WriteLine("Workspace for internal reports is created");
+	    internalWorkspace = await CreateWorkspace(workspaceCollectionName,
+	    workspaceNameInternal);
+	    
+	    Console.WriteLine("Workspace for internal reports is created");
     
     }
     
@@ -1294,7 +1294,7 @@ exist. If they do not, they should be created:
     
     {
     
-    Console.WriteLine("Workspace for internal reports is found");
+    	Console.WriteLine("Workspace for internal reports is found");
     
     }
 
@@ -1314,39 +1314,39 @@ following method:
     
     {
     
-    using (var client = await CreateClient())
-    
-    {
-    
-    ODataResponseListDataset response = await
-    client.Datasets.GetDatasetsAsync(workspaceCollectionName, workspaceId);
-    
-    if (response.Value.Any())
-    
-    {
-    
-    foreach (Dataset d in response.Value)
-    
-    {
-    
-    await client.Datasets.DeleteDatasetByIdAsync(workspaceCollectionName,
-    workspaceId,d.Id);
-    
-    Console.WriteLine("{0}: {1}", d.Name, d.Id);
-    
-    }
-    
-    }
-    
-    else
-    
-    {
-    
-    Console.WriteLine("No Datasets found in this workspace");
-    
-    }
-    
-    }
+	    using (var client = await CreateClient())
+	    
+	    {
+	    
+		    ODataResponseListDataset response = await
+		    client.Datasets.GetDatasetsAsync(workspaceCollectionName, workspaceId);
+		    
+		    if (response.Value.Any())
+		    
+		    {
+		    
+			    foreach (Dataset d in response.Value)
+			    
+			    {
+			    
+			    await client.Datasets.DeleteDatasetByIdAsync(workspaceCollectionName,
+			    workspaceId,d.Id);
+			    
+			    Console.WriteLine("{0}: {1}", d.Name, d.Id);
+			    
+			    }
+		    
+		    }
+		    
+		    else
+		    
+		    {
+		    
+		    	Console.WriteLine("No Datasets found in this workspace");
+		    
+		    }
+	    
+	    }
     
     }
 
@@ -1357,21 +1357,21 @@ The next step is to upload reports and update connection strings:
     
     {
     
-    Console.WriteLine(\$"Importing {file}");
-    
-    string dataSetTempName = String.Format(\$"dataSetName
-    {Guid.NewGuid().ToString()}");
-    
-    var import = await ImportPbix(workspaceCollectionName,
-    internalWorkspace.WorkspaceId, dataSetTempName, file);
-    
-    Console.WriteLine(\$"Updating connection string for {file}");
-    
-    var dataSetID = (from a in import.Datasets where
-    a.Name.Equals(dataSetTempName) select a.Id).FirstOrDefault();
-    
-    await UpdateConnection(workspaceCollectionName,
-    internalWorkspace.WorkspaceId, dataSetID, sqlUserName, sqlPassword);
+	    Console.WriteLine(\$"Importing {file}");
+	    
+	    string dataSetTempName = String.Format(\$"dataSetName
+	    {Guid.NewGuid().ToString()}");
+	    
+	    var import = await ImportPbix(workspaceCollectionName,
+	    internalWorkspace.WorkspaceId, dataSetTempName, file);
+	    
+	    Console.WriteLine(\$"Updating connection string for {file}");
+	    
+	    var dataSetID = (from a in import.Datasets where
+	    a.Name.Equals(dataSetTempName) select a.Id).FirstOrDefault();
+	    
+	    await UpdateConnection(workspaceCollectionName,
+	    internalWorkspace.WorkspaceId, dataSetID, sqlUserName, sqlPassword);
     
     }
 
@@ -1421,49 +1421,49 @@ string:
     
     {
     
-    using (var fileStream = File.OpenRead(filePath.Trim('"')))
+    	using (var fileStream = File.OpenRead(filePath.Trim('"')))
     
-    {
-    
-    using (var client = await CreateClient())
-    
-    {
-    
-    // Set request timeout to support uploading large PBIX files
-    
-    client.HttpClient.Timeout = TimeSpan.FromMinutes(60);
-    
-    client.HttpClient.DefaultRequestHeaders.Add("ActivityId",
-    Guid.NewGuid().ToString());
-    
-    // Import PBIX file from the file stream
-    
-    var import = await
-    client.Imports.PostImportWithFileAsync(workspaceCollectionName,
-    workspaceId, fileStream, datasetName);
-    
-    // Example of polling the import to check when the import has succeeded.
-    
-    while (import.ImportState != "Succeeded" && import.ImportState !=
-    "Failed")
-    
-    {
-    
-    import = await
-    client.Imports.GetImportByIdAsync(workspaceCollectionName, workspaceId,
-    import.Id);
-    
-    Console.WriteLine("Checking import state... {0}", import.ImportState);
-    
-    Thread.Sleep(1000);
-    
-    }
-    
-    return import;
-    
-    }
-    
-    }
+	    {
+	    
+		    using (var client = await CreateClient())
+		    
+		    {
+		    
+			    // Set request timeout to support uploading large PBIX files
+			    
+			    client.HttpClient.Timeout = TimeSpan.FromMinutes(60);
+			    
+			    client.HttpClient.DefaultRequestHeaders.Add("ActivityId",
+			    Guid.NewGuid().ToString());
+			    
+			    // Import PBIX file from the file stream
+			    
+			    var import = await
+			    client.Imports.PostImportWithFileAsync(workspaceCollectionName,
+			    workspaceId, fileStream, datasetName);
+			    
+			    // Example of polling the import to check when the import has succeeded.
+			    
+			    while (import.ImportState != "Succeeded" && import.ImportState !=
+			    "Failed")
+			    
+			    {
+			    
+				    import = await
+				    client.Imports.GetImportByIdAsync(workspaceCollectionName, workspaceId,
+				    import.Id);
+				    
+				    Console.WriteLine("Checking import state... {0}", import.ImportState);
+				    
+				    Thread.Sleep(1000);
+			    
+			    }
+		    
+		    	return import;
+		    
+		    }
+	    
+	    }
     
     }
     
@@ -1472,49 +1472,49 @@ string:
     
     {
     
-    using (var client = await CreateClient())
-    
-    {
-    
-    var datasources = await
-    client.Datasets.GetGatewayDatasourcesAsync(workspaceCollectionName,
-    workspaceId, datasetId);
-    
-    // Reset your connection credentials
-    
-    var delta = new GatewayDatasource
-    
-    {
-    
-    CredentialType = "Basic",
-    
-    BasicCredentials = new BasicCredentials
-    
-    {
-    
-    Username = login,
-    
-    Password = password
-    
-    }
-    
-    };
-    
-    if (datasources.Value.Count != 1)
-    
-    {
-    
-    Console.Write("Expected one datasource, updating the first");
-    
-    }
-    
-    // Update the datasource with the specified credentials
-    
-    await client.Gateways.PatchDatasourceAsync(workspaceCollectionName,
-    workspaceId, datasources.Value\[0\].GatewayId,
-    datasources.Value\[0\].Id, delta);
-    
-    }
+	    using (var client = await CreateClient())
+	    
+	    {
+	    
+		    var datasources = await
+		    client.Datasets.GetGatewayDatasourcesAsync(workspaceCollectionName,
+		    workspaceId, datasetId);
+		    
+		    // Reset your connection credentials
+		    
+		    var delta = new GatewayDatasource
+		    
+		    {
+		    
+			    CredentialType = "Basic",
+			    
+			    BasicCredentials = new BasicCredentials
+			    
+			    {
+			    
+			    Username = login,
+			    
+			    Password = password
+			    
+			    }
+		    
+		    };
+		    
+		    if (datasources.Value.Count != 1)
+		    
+		    {
+		    
+		    	Console.Write("Expected one datasource, updating the first");
+		    
+		    }
+		    
+		    // Update the datasource with the specified credentials
+		    
+		    await client.Gateways.PatchDatasourceAsync(workspaceCollectionName,
+		    workspaceId, datasources.Value\[0\].GatewayId,
+		    datasources.Value\[0\].Id, delta);
+	    
+	    }
     
     }
 
@@ -1592,38 +1592,38 @@ based on parameters:
     
     {
     
-    if (intentName == null)
+	    if (intentName == null)
+	    
+	    {
+	    
+	    	AddEmptyQuery();
+	    
+	    }
+	    
+	    else if (entities == null)
+	    
+	    {
+	    
+	    	AddIntentQuery(intentName,(float)intentScore);
+	    
+	    }
+	    
+	    else if (referenceIds == null)
+	    
+	    {
+	    
+	    	AddIntentEntitiesQuery(intentName, (float)intentScore,entities);
+	    
+	    }
     
-    {
-    
-    AddEmptyQuery();
-    
-    }
-    
-    else if (entities == null)
-    
-    {
-    
-    AddIntentQuery(intentName,(float)intentScore);
-    
-    }
-    
-    else if (referenceIds == null)
-    
-    {
-    
-    AddIntentEntitiesQuery(intentName, (float)intentScore,entities);
-    
-    }
-    
-    else
-    
-    {
-    
-    AddIntentEntitiesReferencesQuery(intentName, (float)intentScore,
-    entities, referenceIds);
-    
-    }
+	    else
+	    
+	    {
+	    
+		    AddIntentEntitiesReferencesQuery(intentName, (float)intentScore,
+		    entities, referenceIds);
+	    
+	    }
     
     }
 
@@ -1640,47 +1640,47 @@ Below is the code of the most complex method from the list:
     
     {
     
-    Query q = new Query
-    
-    {
-    
-    SessionId = currentSessionId,
-    
-    UtcDateTime = DateTime.UtcNow,
-    
-    Entities = new EntitySet&lt;Entity&gt;(),
-    
-    ReferenceProvideds = new EntitySet&lt;ReferenceProvided&gt;(),
-    
-    Intents = new EntitySet&lt;Intent&gt;()
-    
-    { new Intent() { IntentName = intentName, IntentScore = intentScore} }
-    
-    };
-    
-    foreach (var e in entities)
-    
-    {
-    
-    if (e.Value.Score!=null)
-    
-    q.Entities.Add(new Entity() { EntityValue = e.Value.Entity, EntityType =
-    e.Value.Type, EntityScore = (float)e.Value.Score });
-    
-    }
-    
-    foreach (var rid in referenceIds)
-    
-    {
-    
-    q.ReferenceProvideds.Add(new ReferenceProvided() {ReferenceId =
-    rid.Id});
-    
-    }
-    
-    context.Queries.InsertOnSubmit(q);
-    
-    context.SubmitChanges();
+	    Query q = new Query
+	    
+	    {
+	    
+		    SessionId = currentSessionId,
+		    
+		    UtcDateTime = DateTime.UtcNow,
+		    
+		    Entities = new EntitySet&lt;Entity&gt;(),
+		    
+		    ReferenceProvideds = new EntitySet&lt;ReferenceProvided&gt;(),
+		    
+		    Intents = new EntitySet&lt;Intent&gt;()
+		    
+		    { new Intent() { IntentName = intentName, IntentScore = intentScore} }
+	    
+	    	};
+	    
+	    foreach (var e in entities)
+	    
+	    {
+	    
+		    if (e.Value.Score!=null)
+		    
+			    q.Entities.Add(new Entity() { EntityValue = e.Value.Entity, EntityType =
+			    e.Value.Type, EntityScore = (float)e.Value.Score });
+	    
+	    }
+	    
+	    foreach (var rid in referenceIds)
+	    
+	    {
+	    
+		    q.ReferenceProvideds.Add(new ReferenceProvided() {ReferenceId =
+		    rid.Id});
+	    
+	    }
+	    
+	    context.Queries.InsertOnSubmit(q);
+	    
+	    context.SubmitChanges();
     
     }
 
@@ -1834,13 +1834,13 @@ To initialize a conversation you can use the following block:
     
     {
     
-    client = new DirectLineClient("key");
-    
-    conversation = await client.Conversations.StartConversationAsync();
-    
-    await StartListening();
-    
-    await ReadBotMessagesAsync(client, conversation.ConversationId);
+	    client = new DirectLineClient("key");
+	    
+	    conversation = await client.Conversations.StartConversationAsync();
+	    
+	    await StartListening();
+	    
+	    await ReadBotMessagesAsync(client, conversation.ConversationId);
     
     }
 
@@ -1853,80 +1853,80 @@ contains all messages (users and bots) including old messages:
     
     {
     
-    string watermark = null;
-    
-    while (true)
-    
-    {
-    
-    var messages = await
-    client.Conversations.GetActivitiesAsync(conversationId);
-    
-    watermark = messages?.Watermark;
-    
-    var messagesFromBotText = from x in messages.Activities
-    
-    select x;
-    
-    foreach (var message in messagesFromBotText)
-    
-    {
-    
-    await
-    Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
-    
-    () =&gt;
-    
-    {
-    
-    var res = (from a in MessageIDs where a == message.Id select a).Count();
-    
-    if (res==0)
-    
-    {
-    
-    MessageIDs.Add(message.Id);
-    
-    if (message.From.Name.Contains("viaSport"))
-    
-    {
-    
-    if ((message.Text != null) && (message.Text.Length &gt; 0))
-    
-    {
-    
-    chatWindow.Children.Add(new BotMessageText() { Text = message.Text });
-    
-    TalkSomething(message.Text);
-    
-    }
-    
-    else if (message.Attachments.Count&gt;0)
-    
-    {
-    
-    }
-    
-    }
-    
-    else
-    
-    {
-    
-    chatWindow.Children.Add(new UserMessageText() { Text = \$"Sergii:
-    {message.Text}" });
-    
-    }
-    
-    }
-    
-    });
-    
-    }
-    
-    await Task.Delay(TimeSpan.FromSeconds(2)).ConfigureAwait(false);
-    
-    }
+	    string watermark = null;
+	    
+	    while (true)
+	    
+	    {
+		    
+		    var messages = await
+		    client.Conversations.GetActivitiesAsync(conversationId);
+		    
+		    watermark = messages?.Watermark;
+		    
+		    var messagesFromBotText = from x in messages.Activities
+		    
+		    select x;
+		    
+		    foreach (var message in messagesFromBotText)
+		    
+		    {
+		    
+			    await
+			    Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+			    
+			    () =&gt;
+			    
+			    {
+			    
+				    var res = (from a in MessageIDs where a == message.Id select a).Count();
+				    
+				    if (res==0)
+				    
+				    {
+				    
+					    MessageIDs.Add(message.Id);
+					    
+					    if (message.From.Name.Contains("viaSport"))
+					    
+					    {
+					    
+						    if ((message.Text != null) && (message.Text.Length &gt; 0))
+						    
+						    {
+						    
+						    chatWindow.Children.Add(new BotMessageText() { Text = message.Text });
+						    
+						    TalkSomething(message.Text);
+						    
+						    }
+						    
+						    else if (message.Attachments.Count&gt;0)
+						    
+						    {
+						    
+						    }
+						    
+						    }
+						    
+						    else
+						    
+						    {
+						    
+						    chatWindow.Children.Add(new UserMessageText() { Text = \$"Sergii:
+						    {message.Text}" });
+						    
+					    }
+				    
+				    }
+			    
+			    });
+		    
+		    }
+	    
+	    await Task.Delay(TimeSpan.FromSeconds(2)).ConfigureAwait(false);
+	    
+	    }
     
     }
 
@@ -1936,24 +1936,24 @@ Finally, the following code shows how to send messages to a user:
     
     {
     
-    if (conversation!=null)
+    	if (conversation!=null)
     
-    {
-    
-    IMessageActivity message = Activity.CreateMessageActivity();
-    
-    message.From = new ChannelAccount() { Id = "sbaydach@microsoft.com",
-    Name = "Sergii" }; ;
-    
-    message.Text = text;
-    
-    message.Locale = "en-Us";
-    
-    await
-    client.Conversations.PostActivityAsync(conversation.ConversationId,
-    (Activity)message);
-    
-    }
+	    {
+	    
+		    IMessageActivity message = Activity.CreateMessageActivity();
+		    
+		    message.From = new ChannelAccount() { Id = "sbaydach@microsoft.com",
+		    Name = "Sergii" }; ;
+		    
+		    message.Text = text;
+		    
+		    message.Locale = "en-Us";
+		    
+		    await
+		    client.Conversations.PostActivityAsync(conversation.ConversationId,
+		    (Activity)message);
+	    
+	    }
     
     }
 
